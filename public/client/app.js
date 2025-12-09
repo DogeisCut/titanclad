@@ -1184,14 +1184,25 @@ import * as socketStuff from "./socketinit.js";
         if (!unset) ratio *= by;
     };
 
-    function drawGuiRect(x, y, length, height, stroke = false) {
-        switch (stroke) {
-            case true:
-                ctx[2].strokeRect(x, y, length, height);
-                break;
-            case false:
-                ctx[2].fillRect(x, y, length, height);
-                break;
+    function drawGuiRect(x, y, length, height, stroke = false, radius = 0) {
+        ctx[2].beginPath()
+        if (radius > 0) {
+            ctx[2].moveTo(x + radius, y)
+            ctx[2].lineTo(x + length - radius, y)
+            ctx[2].quadraticCurveTo(x + length, y, x + length, y + radius)
+            ctx[2].lineTo(x + length, y + height - radius)
+            ctx[2].quadraticCurveTo(x + length, y + height, x + length - radius, y + height)
+            ctx[2].lineTo(x + radius, y + height)
+            ctx[2].quadraticCurveTo(x, y + height, x, y + height - radius)
+            ctx[2].lineTo(x, y + radius)
+            ctx[2].quadraticCurveTo(x, y, x + radius, y)
+        } else {
+            ctx[2].rect(x, y, length, height)
+        }
+        if (stroke) {
+            ctx[2].stroke()
+        } else {
+            ctx[2].fill()
         }
     }
 
@@ -1258,7 +1269,7 @@ import * as socketStuff from "./socketinit.js";
         // Draw boxes
         ctx[2].globalAlpha = 0.5 * alpha;
         ctx[2].fillStyle = color1 ? color1 : color.grey;
-        if (type == "rect") drawGuiRect(x - width / 2, y, width, height);
+        if (type == "rect") drawGuiRect(x - width / 2, y, width, height, false, 8);
         else if (type == "bar") drawBar(x - width / 2, x + width / 2, y + height / 2, height, color1 ? color1 : color.grey);
         ctx[2].globalAlpha = 0.1 * alpha;
         // Shaders
@@ -1274,9 +1285,6 @@ import * as socketStuff from "./socketinit.js";
             else if (type == "bar") drawBar(x - width / 2, x + width / 2, y + height / 2, height, false)
             
         }
-        ctx[2].fillStyle = color2 ? color2 : color.black;
-        if (type == "rect") drawGuiRect(x - width / 2, y + height * 0.6, width, height * 0.4);
-        else if (type == "bar") drawBar(x - width / 1.9, x + width / 1.9, y + height * 0.7, height * 0.6, color2 ? color2 : color.black);
         ctx[2].globalAlpha = 1 * alpha;
         ctx[2].fillStyle = color.guiwhite;
         ctx[2].strokeStyle = color.black;
@@ -1286,8 +1294,8 @@ import * as socketStuff from "./socketinit.js";
 
         // Draw the borders
         ctx[2].strokeStyle = color3 ? color3 : color.black;
-        ctx[2].lineWidth = 3;
-        if (type == "rect") drawGuiRect(x - width / 2, y, width, height, true);
+        ctx[2].lineWidth = 2;
+        if (type == "rect") drawGuiRect(x - width / 2, y, width, height, true, 8);
         else if (type == "bar") drawBarStroke(x - width / 2, y, width, color3 ? color3 : color.black, height);
     }
     // Entity drawing (this is a function that makes a function)
@@ -1764,7 +1772,7 @@ import * as socketStuff from "./socketinit.js";
         ctx[2].fillStyle = picture.upgradeColor != null
             ? gameDraw.modifyColor(picture.upgradeColor)
             : gameDraw.getColor(getIconColor(colorIndex));
-        drawGuiRect(x, y, len, height);
+        drawGuiRect(x, y, len, height, false, 16 * lineWidthMult);
         // Shading for hover
         if (hover) {
             if (global.clickables.clicked) {
@@ -1776,24 +1784,21 @@ import * as socketStuff from "./socketinit.js";
             }
             drawGuiRect(x, y, len, height);
         }
-        ctx[2].globalAlpha = 0.25 * alpha;
-        ctx[2].fillStyle = color.black;
-        drawGuiRect(x, y + height * 0.6, len, height * 0.4);
         ctx[2].globalAlpha = 1;
 
         // Draw Tank
-        drawEntity(baseColor, entityX, entityY, picture, 1, 1, scale / picture.size, lineWidthMult, angle, true, ctx[2]);
+        drawEntity(baseColor, entityX, entityY, picture, 1, 1, scale / picture.size, lineWidthMult/2, angle, true, ctx[2]);
 
         // Tank name
         drawText(picture.upgradeName ?? picture.name, x + (upgradeKey ? 0.9 * len : len) / 2, y + height * 0.94, height / 10, color.guiwhite, "center");
 
         // Upgrade key
-        if (upgradeKey) {
-            drawText("[" + upgradeKey + "]", x + len - 4, y + height - 6, height / 8 - 5, color.guiwhite, "right");
-        }
+        // if (upgradeKey) {
+        //     drawText("[" + upgradeKey + "]", x + len - 4, y + height - 6, height / 8 - 5, color.guiwhite, "right");
+        // }
         ctx[2].strokeStyle = color.black;
-        ctx[2].lineWidth = 3 * lineWidthMult;
-        drawGuiRect(x, y, len, height, true); // Border
+        ctx[2].lineWidth = 2 * lineWidthMult;
+        drawGuiRect(x, y, len, height, true, 16 * lineWidthMult); // Border
     }
 
     // Draw Game functions
@@ -3026,7 +3031,7 @@ import * as socketStuff from "./socketinit.js";
             let height = len;
 
             // Animation processing
-            global.columnCount = Math.max(global.mobile ? 9 : 3, Math.floor(gui.upgrades.length ** 0.55));
+            global.columnCount = Math.max(global.mobile ? 9 : 4, Math.floor(gui.upgrades.length ** 0.55));
             if (!global.canUpgrade) {
                 upgradeMenu.force(-global.columnCount * 3)
                 global.canUpgrade = true;
