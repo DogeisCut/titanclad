@@ -35,7 +35,7 @@ const config = {
             }
         }
     },
-    animationSettings: { value: 1, scale: 1, ScaleBar: 40 },
+    animationSettings: { value: 1, scale: 1 },
     lag: {
         unresponsive: false,
         memory: 500,
@@ -76,7 +76,7 @@ global.tips = [[
         "Tip: You can play on mobile by just going to [host link here] on your phone!" // TODO: make this automatically change to the host
     ], [
         "Tip: You can have the shield and health bar be separated by going to the options menu.",
-        "Tip: If guuimy is having a low frame rate, you can try enabling low graphics in the options menu.",
+        "Tip: If gomeux is having a low frame rate, you can try enabling low graphics in the options menu.",
         "Tip: You can make traps rounded with the classic trap setting in the options menu.",
         "Tip: You can create your own private server with the template in the link on the options menu.",
         "Tip: You can create your own theme with the custom theme maker in the link on the options menu."

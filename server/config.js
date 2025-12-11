@@ -39,9 +39,9 @@ module.exports = {
     map_tile_height: 420,
 
     // The message that appears once a player spawns.
-    spawn_message: "You have spawned! Welcome to the game.\n"
-                 + "You will be invulnerable until you move or shoot.\n"
-                 + "Please report any bugs you encounter!",
+    // spawn_message: "You have spawned! Welcome to the game.\n"
+    //              + "You will be invulnerable until you move or shoot.\n"
+    //              + "Please report any bugs you encounter!",
 
     chat_message_duration: 15_000, // How long a chat message lasts in milliseconds. Includes the fade-out period.
     popup_message_duration: 10_000, // How long (in milliseconds) a popup message lasts before fading out.
@@ -80,8 +80,8 @@ module.exports = {
 
     // Bots
     bot_cap: 0, // Maximum number of bots that can be on the server. Set to 0 to disable bots.
-    bot_xp_gain: 60, // How much XP bots get until they reach level_cap.
-    bot_start_level: 45, // How much XP bots will receive when first created.
+    bot_xp_gain: 0, // How much XP bots get until they reach level_cap.
+    bot_start_level: 0, // How much XP bots will receive when first created.
     bot_skill_upgrade_chances: [1, 1, 3, 4, 4, 4, 4, 2, 1, 1], // The chances of a bot upgrading a specific skill when skill upgrades are available.
     bot_class_upgrade_chances: [1, 5, 20, 37, 37], // The chances of a bot upgrading a specific amount of times before it stops upgrading.
     bot_name_prefix: "[AI] ", // This is prefixed before the bot's randomly chosen name.

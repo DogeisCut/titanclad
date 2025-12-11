@@ -1246,7 +1246,7 @@ class socketManager {
         socket.status.hasSpawned = true;
 
         //send the welcome message
-        if (!doNotTakeAction.dontSendWelcomeMessage) {
+        if (!doNotTakeAction.dontSendWelcomeMessage && Config.spawn_message) {
             let msg = Config.spawn_message.split("\n");
             for (let i = 0; i < msg.length; i++) {
                 body.sendMessage(msg[i]);

@@ -1057,10 +1057,10 @@ class Entity extends EventEmitter {
                     }
                     // Only if we give messages
                     if (doISendAText) {
-                        instance.sendMessage("You killed " + name + (killers.length > 1 ? " (with some help)." : "."));
+                        instance.sendMessage("You killed " + name + (killers.length > 1 ? " (assist)." : "."));
                     }
                     if (this.settings.killMessage) {
-                        instance.sendMessage("You " + this.settings.killMessage + " " + name + (killers.length > 1 ? " (with some help)." : "."));
+                        instance.sendMessage("You " + this.settings.killMessage + " " + name + (killers.length > 1 ? " (assist)." : "."));
                     }
                 }
                 // Prepare the next part of the next
@@ -1082,7 +1082,7 @@ class Entity extends EventEmitter {
                     text = text.slice(0, -4);
                     text += "!";
                 } else {
-                    text += " fought a polygon... and the polygon won.";
+                    text += " died by mysterious means...";
                 }
                 global.gameManager.socketManager.broadcast(text);
             }
@@ -1103,7 +1103,7 @@ class Entity extends EventEmitter {
             // Prepare it and clear the collision array.
             killText = killText.slice(0, -5);
             if (killText === "You have been kille") {
-                killText = "You have died a stupid death";
+                killText = "You have died by mysterious means...";
             }
             if (!this.dontSendDeathMessage) {
                 this.sendMessage(killText + ".");
@@ -1112,7 +1112,7 @@ class Entity extends EventEmitter {
             if (this.id === global.gameManager.room.topPlayerID) {
                 let usurptText = this.name === "" ? "The leader" : this.name;
                 if (notJustFood) {
-                    usurptText += " has been usurped by";
+                    usurptText += " has been overtaken by";
                     for (let i = 0; i < killers.length; i++) {
                         usurptText += " ";
                         usurptText += killers[i].name === "" ? "an unnamed player" : killers[i].name;
@@ -1120,7 +1120,7 @@ class Entity extends EventEmitter {
                     }
                     usurptText = usurptText.slice(0, -4) + "!";
                 } else {
-                    usurptText += " fought a polygon... and the polygon won.";
+                    usurptText += " died by mysterious means...";
                 }
                 global.gameManager.socketManager.broadcast(usurptText);
             }

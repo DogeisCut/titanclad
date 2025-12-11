@@ -56,7 +56,7 @@ import * as socketStuff from "./socketinit.js";
     let tips = global.tips[Math.floor(Math.random() * global.tips.length)];
     global.tips = tips[Math.floor(Math.random() * tips.length)];
     // Window setup <3
-    global.mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent);
+    global.mobile = false///Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent);
     global.mobile && document.body.classList.add("mobile");
     !global.mobile && document.getElementById("tabAppearance").classList.remove("shadowScroll");
 
@@ -970,7 +970,7 @@ import * as socketStuff from "./socketinit.js";
     // The skill bar dividers
     let skas = [];
     for (let i = 1; i <= 256; i++) { //if you want to have more skill levels than 255, then update this
-        skas.push((i - 2) * 0.01 + Math.log(4 * (i / 9) + 1) / 1.513);
+        skas.push(i/5);
     }
     const ska = (x) => skas[x];
     var getClassUpgradeKey = function (number) {
@@ -2415,20 +2415,13 @@ import * as socketStuff from "./socketinit.js";
 
     function drawMessages(spacing, alcoveSize) {
         // Draw messages
-        let height = 18;
+        let height = 25;
         let x = global.screenWidth / 2;
-        let y = spacing + 5;
-        if (global.mobile) {
-            if (global.canUpgrade) {
-                mobileUpgradeGlide.set(0 + (global.canUpgrade || global.upgradeHover));
-                y += (alcoveSize / 1.4 /*+ spacing * 2*/) * mobileUpgradeGlide.get();
-            }
-            y += global.canSkill || global.showSkill ? (alcoveSize / 2.2 /*+ spacing * 2*/) * statMenu.get() : 0;
-        }
+        let y = spacing;
 
         // Draw each message
         var Bd = Date.now();
-        var yy = config.animationSettings.ScaleBar;
+        var yy = 20;
         for (let i = global.messages.length - 1; i >= 0; i--) {
             let msg = global.messages[i],
                 txt = msg.text,
@@ -2446,7 +2439,7 @@ import * as socketStuff from "./socketinit.js";
                 let len = 0;
                 // Give it a textobj if it doesn't have one
                 msg.textJSON.forEach((txt) => {
-                    if (len < measureText(txt, height - 4, false)) len = measureText(txt, height - 4, false)
+                    if (len < measureText(txt, 16, false)) len = measureText(txt, 16, false)
                 })
                 ctx[2].globalAlpha = 0.5 * K;
                 // Draw the background
@@ -2456,19 +2449,19 @@ import * as socketStuff from "./socketinit.js";
                 msg.textobjs = [];
                 msg.textJSON.forEach((txt) => {
                     msg.textobjs[msg.textobjs.length] = function () { }; // For some reason this fixes the text's location i guess.
-                    drawText(txt, x - len / 2, y + 15 + 18 * (msg.textobjs.length - 1), height - 4, color.guiwhite, "left");
+                    drawText(txt, x - len / 2, (y + 15 + 18 * (msg.textobjs.length - 1)) + 2, 16, color.guiwhite, "left");
                 })
-                y += 23 * K + 18 * (3 - 2 * K) * (msg.textJSON.length - 1) * K * K;
+                y += 30 * K + 18 * (3 - 2 * K) * (msg.textJSON.length - 1) * K * K;
             } else {
                 // Give it a textobj if it doesn't have one
-                if (msg.len == null) msg.len = measureText(text, height - 4);
+                if (msg.len == null) msg.len = measureText(text, 16);
                 // Draw the background
                 ctx[2].globalAlpha = 0.5 * K;
                 drawBar(x - msg.len / 2, x + msg.len / 2, y + yy / 2, height + 2, color.black);
                 // Draw the text
                 ctx[2].globalAlpha = K;
-                drawText(text, x, y + yy / 2, height - 4, color.guiwhite, "center", true);
-                y += 23 * (3 - 2 * K) * K * K;
+                drawText(text, x, (y + yy / 2) + 2, 16, color.guiwhite, "center", true);
+                y += 30 * (3 - 2 * K) * K * K;
             }
         }
         ctx[2].globalAlpha = 1;
@@ -2568,18 +2561,12 @@ import * as socketStuff from "./socketinit.js";
                     ctx[1].globalAlpha = alpha * alpha * fade;
 
                     //background bar
-                    drawBar(x - size, x + size, yy + barWidth * config.graphical.separatedHealthbars / 2, barWidth * (1 + config.graphical.separatedHealthbars) + config.graphical.barChunk, color.black, ctx[1]);
+                    drawBar(x - size, x + size, yy + barWidth, barWidth + config.graphical.borderChunk, color.black, ctx[1]);
 
                     //hp bar
-                    drawBar(x - size, x - size + 2 * size * health, yy + barWidth * config.graphical.separatedHealthbars, barWidth, col, ctx[1]);
+                    drawBar(x - size, x - size + 2 * size * health, yy + barWidth, barWidth, col, ctx[1]);
 
-                    //shield bar
-                    if (shield || config.graphical.separatedHealthbars) {
-                        if (!config.graphical.separatedHealthbars) ctx[1].globalAlpha *= 0.7;
-                        ctx[1].globalAlpha *= 0.3 + 0.3 * shield,
-                            drawBar(x - size, x - size + 2 * size * shield, yy, barWidth, config.graphical.coloredHealthbars ? gameDraw.mixColors(col, color.guiblack, 0.25) : color.teal, ctx[1]);
-                    }
-                    if (gui.showhealthtext) drawText(Math.round(instance.healthN) + "/" + Math.round(instance.maxHealthN), x, yy + barWidth * 2 + barWidth * config.graphical.separatedHealthbars * 2 + 10, 12 * ratio, color.guiwhite, "center");
+                    if (gui.showhealthtext) drawText(Math.round(instance.healthN) + "/" + Math.round(instance.maxHealthN), x, yy + barWidth * 2 + 10, 12 * ratio, color.guiwhite, "center");
                     ctx[1].globalAlpha = alpha;
                 }
             }
@@ -2601,8 +2588,8 @@ import * as socketStuff from "./socketinit.js";
                 var namecolor = instance.name.substring(0, 7);
                 ctx[1].globalAlpha = alpha * alpha * fade;
                 let g = Math.max(20, size);
-                if (global.GUIStatus.renderPlayerNames) drawText(name, x, y - g * (global.GUIStatus.renderPlayerScores ? 1.9 : 1.45), 0.55 * g, namecolor == "#ffffff" ? color.guiwhite : namecolor, "center", false, 1, true, ctx[1]);
-                if (global.GUIStatus.renderPlayerScores || typeof instance.score === "string") drawText(typeof instance.score === "string" ? instance.score : util.handleLargeNumber(instance.score, 1), x, y - 1.45 * g, 0.3 * g, namecolor == "#ffffff" ? color.guiwhite : namecolor, "center", false, 1, true, ctx[1]);
+                if (global.GUIStatus.renderPlayerNames) drawText(name, x, y - g * (global.GUIStatus.renderPlayerScores ? 2 : 1.5), 0.8 * g, namecolor == "#ffffff" ? color.guiwhite : namecolor, "center", false, 1, true, ctx[1]);
+                if (global.GUIStatus.renderPlayerScores || typeof instance.score === "string") drawText(typeof instance.score === "string" ? instance.score : util.handleLargeNumber(instance.score, 1), x, y - 1.33 * g, 0.5 * g, namecolor == "#ffffff" ? color.guiwhite : namecolor, "center", false, 1, true, ctx[1]);
                 ctx[1].globalAlpha = 1;
             }
         }
@@ -2614,13 +2601,13 @@ import * as socketStuff from "./socketinit.js";
         statMenu.set(0 + (global.died || global.statHover || (global.canSkill && !gui.skills.every(skill => skill.cap === skill.amount))));
         global.clickables.stat.hide();
 
-        let vspacing = 5;
-        let height = 14;
-        let gap = 44.5;
-        let len = alcoveSize - 10; // * global.screenWidth; // The 30 is for the value modifiers
+        let vspacing = 10;
+        let height = 20;
+        let gap = 0;
+        let len = alcoveSize; // * global.screenWidth; // The 30 is for the value modifiers
         let save = len;
-        let x = global.screenWidth - spacing - 3 - (statMenu.get() - 1) * (height + 50 + len * ska(gui.skills.reduce((largest, skill) => Math.max(largest, skill.cap), 0)));
-        let y = global.screenHeight - spacing - 5.5 - height;
+        let x = global.screenWidth - spacing - (statMenu.get() - 1) * (height + 50 + len * ska(gui.skills.reduce((largest, skill) => Math.max(largest, skill.cap), 0)));
+        let y = global.screenHeight - spacing - height;
         let ticker = 11;
         let namedata;
         try {
@@ -2651,88 +2638,100 @@ import * as socketStuff from "./socketinit.js";
             }
 
             //bar fills
-            drawBar(x + height / 2, x - height / 2 + len * ska(cap) - 14, y + height / 2, height - 2.8 + config.graphical.barChunk, color.black);
-            drawBar(x + height / 2, x + height / 2 + len * ska(cap) - gap, y + height / 2, height - 3, color.grey);
-            drawBar(x + height / 2, x + height / 2 + len * ska(level) - gap, y + height / 2, height - 5.5 + config.graphical.barChunk, color.black);
-            drawBar(x + height / 2, x + height / 2 + len * ska(level) - gap, y + height / 2, height - 3.5, col);
+            //drawBar(x - height / 2, x - height / 2 - len * ska(cap) - 14, y + height / 2, height - 2.8 + config.graphical.barChunk, color.black);
+            //drawBar(x + height / 2, x + height / 2 + len * ska(cap) - gap, y + height / 2, height - 3, color.grey);
+            //drawBar(x - height / 2, x + height / 2 - len * ska(level) - gap, y + height / 2, height - 3.5 + config.graphical.borderChunk, color.black);
+            drawBar(x - height / 2, x + height / 2 - len * ska(cap - 1) + gap, y + height / 2, height - 3.5 + config.graphical.borderChunk, color.black);
+            drawBar(x - height / 2, x + height / 2 - len * ska(cap - 1) + gap, y + height / 2, height - 3.5, gameDraw.mixColors(color.black, col, 0.1));
+            if (level) {
+                drawBar(x - height / 2, x + height / 2 - len * ska(level-1) + gap, y + height / 2, height - 3.5, col);
+            }
+            ctx[2].fillStyle = color.black
+            drawGuiCircle(x - height / 2, y + height / 2, (height - 1.5 + config.graphical.borderChunk)/2);
+            ctx[2].fillStyle = color.guiwhite
+            drawGuiCircle(x - height / 2, y + height / 2, (height - 1.5)/2);
+            drawText("+", x - height / 2 + 1, y + height / 2 + 6.5, 16, color.black, "center", false, undefined, false);
 
             // Blocked-off area
             if (blocking) {
                 ctx[2].lineWidth = 1;
                 ctx[2].strokeStyle = color.grey;
                 for (let j = cap + 1; j < max; j++) {
-                    drawGuiLine(x + len * ska(j) - gap, y + 1.5, x + len * ska(j) - gap, y - 3 + height);
+                    drawGuiLine(x - len * ska(j-1) + gap, y + 1.5, x - len * ska(j-1) + gap, y - 2 + height);
                 }
             }
 
             // Vertical dividers
             ctx[2].strokeStyle = color.black;
             ctx[2].lineWidth = 1;
-            for (let j = 1; j < level + 1; j++) {
-                drawGuiLine(x + len * ska(j) - gap, y + 1.5, x + len * ska(j) - gap, y - 3 + height);
+            for (let j = 1; j < cap; j++) {
+                drawGuiLine(x - len * ska(j-1) + gap, y + 1.5, x - len * ska(j-1) + gap, y - 2 + height);
             }
 
-            // Skill name
-            len = save * ska(max);
-            let textcolor = level == maxLevel ? col : !gui.points || (cap !== maxLevel && level == cap) ? color.grey : color.guiwhite;
-            drawText(name, Math.round(x + len / 2) - 5.5, y + height / 2, height - 4.1, textcolor, "center", true);
+            const statKeys = ["1","2","3","4","5","6","7","8","9","0","-","="]
 
-            // Skill key
-            drawText("[" + (ticker % 10) + "]", Math.round(x + len - height * 0.25) - 14.5, y + height / 2, height - 6, textcolor, "right", true);
+            // Skill name
+            len = save * ska(max-1);
+            let textcolor = level == maxLevel ? col : !gui.points || (cap !== maxLevel && level == cap) ? color.grey : color.guiwhite;
+            drawText(name/* + ` (${statKeys[ticker-1]})`*/, Math.round(x - len / 2), y + height / 2 + 2, height - 4.1, textcolor, "center", true);
+
+            //Skill key
+            //drawText("[" + (ticker % 10) + "]", Math.round(x - len - height * 0.25) - 14.5, y + height / 2, height - 6, textcolor, "right", true);
             if (textcolor === color.guiwhite) {
                 // If it's active
-                global.clickables.stat.place(ticker - 1, x * clickableRatio, y * clickableRatio, len * clickableRatio, height * clickableRatio);
+                global.clickables.stat.place(ticker - 1, (x - len) * clickableRatio, y * clickableRatio, len * clickableRatio, height * clickableRatio);
             }
 
             // Skill value
-            if (level) {
-                drawText(textcolor === col ? "MAX" : "+" + level, Math.round(x + len + 4) - 5.5, y + height / 2, height - 5, col, "left", true);
-            }
+            // if (level) {
+            //     drawText(textcolor === col ? "MAX" : "+" + level, Math.round(x + len + 4) - 5.5, y + height / 2, height - 5, col, "left", true);
+            // }
 
             // Move on
             y -= height + vspacing;
         }
 
-        global.clickables.hover.place(0, 0, y * clickableRatio, 0.8 * len * clickableRatio, (global.screenHeight - y) * clickableRatio);
+        global.clickables.hover.place(0, (global.screenWidth -  0.8 * len) * clickableRatio, y * clickableRatio, 0.8 * len * clickableRatio, (global.screenHeight - y) * clickableRatio);
         if (gui.points !== 0) {
             // Draw skillpoints to spend
-            drawText("x" + gui.points, Math.round(x + len - 2) - 13, Math.round(y + height - 4) + 2, 18.5, color.guiwhite, "right");
+            drawText(gui.points + "x", Math.round(x - len - 2) - 13, global.screenHeight - spacing , 32, color.guiwhite, "right");
         }
+        drawText("Stats", x-(len/2), Math.round(y + height - 4) + 2, 32, color.guiwhite, "center", false);
     }
 
-    function drawSelfInfo(max) {
-        const mainColor = gui.color ? gameDraw.modifyColor(gui.color) : 0
+    function drawSelfInfo(spacing, max) {
+        const mainColor = gui.color ? gameDraw.modifyColor(gui.color) : "#ffffff"
         //rendering information
         let width = 440,
             scorewidth = 70,
             scorelength = 0,
             height = 25.5,
             x = (global.screenWidth - width) / 2,
-            y = global.screenHeight - 22 - height;
+            y = global.screenHeight - height - spacing;
         ctx[2].lineWidth = 10;
-        drawBar(x, x + width, y + height / 2, height - 3 + config.graphical.barChunk, color.black);
-        drawBar(x, x + width, y + height / 2, height - 3, color.grey);
+        drawBar(x, x + width, y + height / 2, height - 4 + config.graphical.borderChunk, color.black);
+        drawBar(x, x + width, y + height / 2, height - 4, gameDraw.mixColors(color.black, mainColor, 0.1));
         drawBar(x, x + width * gui.__s.getProgress(), y + height / 2, height - 3.5, mainColor);
-        drawText("Level " + gui.__s.getLevel() + " " + gui.class, x + width / 2 + 1, y + height / 2 + 9, 21, color.guiwhite, "center", false, 6);
-        height = 17;
-        y -= height + 5;
+        drawText("Level " + gui.__s.getLevel() + " " + gui.class, x + width / 2 + 1, y + height / 2 + 9, 18, color.guiwhite, "center", false, 6);
+        height = 22.5;
+        y -= height + 10;
         if (global.GUIStatus.renderPlayerKillbar) {
             scorelength = -112.2;
             scorewidth = 160;
-            drawBar(x + scorewidth - scorelength, x + width - scorewidth - scorelength, y + height / 2, height - 3 + config.graphical.barChunk, color.black);
-            drawBar(x + scorewidth - scorelength, x + width - scorewidth - scorelength, y + height / 2, height - 3, color.grey);
+            drawBar(x + scorewidth - scorelength, x + width - scorewidth - scorelength, y + height / 2, height - 3 + config.graphical.borderChunk, color.black);
+            drawBar(x + scorewidth - scorelength, x + width - scorewidth - scorelength, y + height / 2, height - 3, gameDraw.mixColors(color.black, mainColor, 0.1));
             drawBar(x + scorewidth - scorelength, x - scorelength + width * ((scorewidth / width) + ((width - scorewidth * 2) / width) * (1 ? Math.min(1, gui.__s.getKills()[0] / 1) : 1)), y + height / 2, height - 3.5, mainColor);
             drawText("Kills: " + util.formatKills(...gui.__s.getKills()), x + width / 2 + 0.5 - scorelength, y + height / 2 + 6, 13, color.guiwhite, "center");
             scorelength = 72.5;
             scorewidth = 120;
         }
-        drawBar(x + scorewidth - scorelength, x + width - scorewidth - scorelength, y + height / 2, height - 3 + config.graphical.barChunk, color.black);
-        drawBar(x + scorewidth - scorelength, x + width - scorewidth - scorelength, y + height / 2, height - 3, color.grey);
+        drawBar(x + scorewidth - scorelength, x + width - scorewidth - scorelength, y + height / 2, height - 3 + config.graphical.borderChunk, color.black);
+        drawBar(x + scorewidth - scorelength, x + width - scorewidth - scorelength, y + height / 2, height - 3, gameDraw.mixColors(color.black, mainColor, 0.1));
         drawBar(x + scorewidth - scorelength, x - scorelength + width * ((scorewidth / width) + ((width - scorewidth * 2) / width) * (max ? Math.min(1, gui.__s.getScore() / max) : 1)), y + height / 2, height - 3.5, mainColor);
-        drawText("Score: " + util.formatLargeNumber(Math.round(gui.__s.getScore())), x + width / 2 + 0.5 - scorelength, y + height / 2 + 6, 13, color.guiwhite, "center");
+        drawText("Score: " + util.formatLargeNumber(Math.round(gui.__s.getScore())), x + width / 2 + 0.5 - scorelength, y + height / 2 + 9, 18, color.guiwhite, "center");
         ctx[2].lineWidth = 4;
         var name = global.player.name.substring(7, global.player.name.length + 1);
-        drawText(name, Math.round(x + width / 2) + 1.5, Math.round(y - 10 - 4) - 1, 48, global.nameColor = "#ffffff" ? color.guiwhite : global.nameColor, "center");
+        drawText(name, Math.round(x + width / 2) + 1.5, Math.round(y - 15 - 4) - 1, 48, global.nameColor = "#ffffff" ? color.guiwhite : global.nameColor, "center");
     }
 
     function handleSpeedMonitor() {
@@ -2757,6 +2756,8 @@ import * as socketStuff from "./socketinit.js";
             y += global.canUpgrade ? (alcoveSize / 1.5) * mobileUpgradeGlide.get() * upgradeColumns / 1.5 + spacing * (upgradeColumns + 1.55) + 9 : 0;
             y += global.canSkill || global.showSkill ? statMenu.get() * alcoveSize / 2.6 + spacing / 0.75 : 0;
         }
+        x = spacing
+        y = spacing 
 
         // Calculate minimap center if needed
         let centerX = x + len / 2;
@@ -2765,7 +2766,7 @@ import * as socketStuff from "./socketinit.js";
         ctx[2].globalAlpha = 0.4;
         ctx[2].save();
         ctx[2].fillStyle = color.white;
-        global.advanced.roundMap ? drawGuiCircle(x + len / 2, y + height / 2, len / 2) : drawGuiRect(x, y, len, height);
+        global.advanced.roundMap ? drawGuiCircle(x + len / 2, y + height / 2, len / 2) : drawGuiRect(x, y, len, height, false, 8);
         ctx[2].beginPath(); // We will not allow to draw outside of the minimap so we are only allowing minimap entities to draw INSIDE the minimap only
         global.advanced.roundMap ? ctx[2].arc(x + len / 2, y + height / 2, len / 2, 0, 2 * Math.PI) : ctx[2].rect(x, y, len, height); // Draw everything inside the minimap
         ctx[2].clip();
@@ -2861,20 +2862,21 @@ import * as socketStuff from "./socketinit.js";
         ctx[2].globalAlpha = 1;
         ctx[2].fillStyle = color.black;
         // Draw border of the minimap
-        ctx[2].lineWidth = 3;
-        global.advanced.roundMap ? drawGuiCircle(x + len / 2, y + height / 2, len / 2, true) : drawGuiRect(x, y, len, height, true); // Border
+        ctx[2].lineWidth = config.graphical.borderChunk / 2;
+        global.advanced.roundMap ? drawGuiCircle(x + len / 2, y + height / 2, len / 2, true) : drawGuiRect(x, y, len, height, true, 8); // Border
         if (global.mobile) {
             x = global.screenWidth - spacing - len;
             y = global.screenHeight - spacing;
         }
+        // Minimap stuff ends here
+        /*
+        // Debug stuff
         if (global.showDebug) {
             drawGuiRect(x, y - 40, len, 30);
             lagGraph(lag.get(), x, y - 40, len, 30, color.teal);
             gapGraph(global.metrics.rendergap, x, y - 40, len, 30, color.pink);
             timingGraph(GRAPHDATA, x, y - 40, len, 30, color.yellow);
         }
-        // Minimap stuff ends here
-        // Debug stuff
         if (!global.showDebug) y += 13 * 3;
         // Text
         handleSpeedMonitor();
@@ -2883,7 +2885,7 @@ import * as socketStuff from "./socketinit.js";
         let ping = global.metrics.latency.reduce((b, a) => b + a, 1) / global.metrics.latency.length - 1;
         let xloc = global.player.renderx / 30;
         let yloc = global.player.rendery / 30;
-        let watermarkText = "guuimy.io";
+        let watermarkText = "gomeux.io";
         let length = Math.max(measureText(watermarkText, 32)) / 12;
         let watermarkTextPos1 = Math.round(x + len / 2) + 0.5;
         let watermarkColor = gameDraw.getColor({gradient: true, asset: [{color: `${color.lgreen}`}, {color: `${color.purple}`}]}, ctx[2], watermarkTextPos1 - length, length * 0.07, watermarkTextPos1 + length, 0);
@@ -2921,14 +2923,15 @@ import * as socketStuff from "./socketinit.js";
             drawText(`§${global.metrics.rendertime_color}§ ${global.metrics.rendertime} FPS §reset§/` + `§${global.serverStats.mspt_color}§ ${global.serverStats.mspt} mspt`, x + len, y - 50 - 1 * 14, 10, color.guiwhite, "right");
             drawText(ping.toFixed(1) + " ms / " + global.serverStats.serverGamemodeName + " " + global.locationHash, x + len, y - 50, 10, color.guiwhite, "right");
         } else drawText(watermarkText, x + len, y - 22 - 2 * 14 - 2, 15, watermarkColor, "right");
+        */
     }
 
     function drawLeaderboard(spacing, alcoveSize, max) {
         // Draw leaderboard
         let lb = leaderboard.get();
-        let vspacing = 4;
-        let len = alcoveSize; // * global.screenWidth;
-        let height = 14;
+        let vspacing = 8;
+        let len = alcoveSize * 1.5; // * global.screenWidth;
+        let height = 20;
         let x = global.screenWidth - spacing - 10;
         let y = spacing + height + 13;
         lbGlide.set(0 + lb.data.length > 0);
@@ -2943,7 +2946,7 @@ import * as socketStuff from "./socketinit.js";
             }
             y += global.canSkill || global.showSkill ? (alcoveSize / 2.2 /*+ spacing * 2*/) * statMenu.get() : 0;
         }
-        drawText("Leaderboard", Math.round(x + len / 2) + 0.5, Math.round(y - 6) + 0.5, height + 3.5, color.guiwhite, "center");
+        drawText("Leaderboard", Math.round(x + len / 2) + 0.5, Math.round(y - 6) + 0.5, 32, color.guiwhite, "center");
         y += 7;
 
         for (let i = 0; i < lb.data.length; i++) {
@@ -3000,8 +3003,8 @@ import * as socketStuff from "./socketinit.js";
                 if (entry.y !== entry.targetY) entryPos = entry.y + entry.animY.get() * (entry.targetY - entry.y);
                 let entryY = y + (vspacing + height) * entryPos;
 
-                drawBar(entryX, entryX + len, entryY + height / 2 - .7, height - 3 + config.graphical.barChunk, color.black);
-                drawBar(entryX, entryX + len, entryY + height / 2 - .7, height - 3, color.grey);
+                drawBar(entryX, entryX + len, entryY + height / 2 - .7, height - 3 + config.graphical.borderChunk, color.black);
+                drawBar(entryX, entryX + len, entryY + height / 2 - .7, height - 3, gameDraw.mixColors(color.black, gameDraw.modifyColor(entry.barColor), 0.1));
                 let shift = Math.min(1, entry.score / max);
                 drawBar(entryX, entryX + len * shift, entryY + height / 2 - .7, height - 3.5, gameDraw.modifyColor(entry.barColor));
 
@@ -3010,14 +3013,14 @@ import * as socketStuff from "./socketinit.js";
                 let overwritelabel = entry.label.includes("#")
                     ? entry.label.replace("##", Math.round(entry.score).toString()).replace("#s", 1 === Math.round(entry.score) ? "" : "s")
                     : false;
-                drawText(overwritelabel ? overwritelabel : entry.label + (": " + util.handleLargeNumber(Math.round(entry.score))), entryX + len / 2, entryY + height / 2, height - 4.5, nameColor == "#ffffff" ? color.guiwhite : nameColor, "center", true);
+                drawText(overwritelabel ? overwritelabel : entry.label + (util.handleLargeNumber(Math.round(entry.score))), entryX + len / 2, entryY + height / 2 + 2, 16, nameColor == "#ffffff" ? color.guiwhite : nameColor, "center", true);
 
                 // Mini-image
                 if (entry.renderEntity) {
                     let xx = entryX - 1.5 * height - scale * entry.position.middle.x * Math.SQRT1_2,
                         yy = entryY + 0.5 * height - scale * entry.position.middle.y * Math.SQRT1_2,
                         baseColor = entry.color;
-                    drawEntity(baseColor, xx, yy, entry.image, 1 / scale, 1, (scale * scale) / entry.image.size, 2, -Math.PI / 4, true, ctx[2], false, entry.image.render, false, true);
+                    drawEntity(baseColor, xx, yy, entry.image, 1 / scale, 1, (scale * scale) / entry.image.size * 1.25, 3, Math.PI, true, ctx[2], false, entry.image.render, false, true);
                 }
             }
         }
@@ -3028,26 +3031,26 @@ import * as socketStuff from "./socketinit.js";
         // Draw upgrade menu
         if (global.optionsMenu_Anim.isOpened) global.clickables.upgrade.hide();
         if (gui.upgrades.length > 0) {
-            let internalSpacing = 12;
+            let internalSpacing = 8;
             let len = alcoveSize / 1.5;
             let height = len;
 
             // Animation processing
-            global.columnCount = Math.max(global.mobile ? 9 : 4, Math.floor(gui.upgrades.length ** 0.55));
+            global.columnCount = Math.max(5, Math.floor(gui.upgrades.length ** 0.55));
             if (!global.canUpgrade) {
-                upgradeMenu.force(-global.columnCount * 3)
+                upgradeMenu.force(global.screenWidth)
                 global.canUpgrade = true;
             } else
                 if (global.pullUpgradeMenu) {
-                    upgradeMenu.set(-global.columnCount * 3);
+                    upgradeMenu.set(global.screenWidth);
                 } else upgradeMenu.set(0);
             let glide = upgradeMenu.get();
 
             upgradeSpin = Date.now() * -0.0007;
             upgradeSpin = upgradeSpin - (Math.floor(upgradeSpin / Math.PI / 2) * Math.PI * 2);
 
-            let x = glide * 2 * spacing + spacing + 5;
-            let y = global.screenHeight - spacing;
+            let x = spacing - glide;
+            let y = global.screenHeight - spacing + internalSpacing;
             let xStart = x;
             let initialX = x;
             let rowWidth = 0;
@@ -3100,6 +3103,8 @@ import * as socketStuff from "./socketinit.js";
             } else {
                 x += len + internalSpacing;
             }
+
+            drawText("Upgrades", (spacing + ((internalSpacing*(global.columnCount-1)) + (global.columnCount*len))/2) - glide, y - internalSpacing * 2.3, 32, color.guiwhite, "center", false);
 
             // Draw dont upgrade button
             let h = height,
@@ -3659,7 +3664,7 @@ import * as socketStuff from "./socketinit.js";
         scaleScreenRatio(scaleRatio, true);
         let ratio = util.getScreenRatio();
         //draw hud
-        let spacing = 25;
+        let spacing = 10;
         let alcoveSize = 200 / ratio; // drawRatio * global.screenWidth;
         gui.__s.update();
         let lb = leaderboard.get();
@@ -3676,7 +3681,7 @@ import * as socketStuff from "./socketinit.js";
         if (global.GUIStatus.renderGUI) {
             drawMessages(spacing, alcoveSize);
             drawSkillBars(spacing, alcoveSize);
-            drawSelfInfo(max);
+            drawSelfInfo(spacing, max);
             drawMinimapAndDebug(spacing, alcoveSize, global.GRAPHDATA, tick);
             if (global.GUIStatus.renderLeaderboard) drawLeaderboard(spacing, alcoveSize, max);
             drawAvailableUpgrades(spacing, alcoveSize);
@@ -4226,7 +4231,7 @@ import * as socketStuff from "./socketinit.js";
                 drawDisconnectedScreen();
             }
             if (global.dailyTankAd.renderUI) drawAdScreen();
-            drawOptionsMenu(tick, 20, util.getScreenRatio());
+            //drawOptionsMenu(tick, 20, util.getScreenRatio());
             if (global.GUIStatus.fullHDMode) ctx[2].translate(-0.5, -0.5);
 
             //oh no we need to throw an error!

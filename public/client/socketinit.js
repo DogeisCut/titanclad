@@ -245,7 +245,7 @@ const Entry = class {
             image: util.requestEntityImage(this.index, this.color),
             position: ref.position,
             barColor: this.bar,
-            label: this.name ? this.name + " - " + this.label : this.label,
+            label: this.name ? this.name + " - " : "",
             score: this.score.get(),
             nameColor: this.nameColor,
             renderEntity: this.renderEntity,
