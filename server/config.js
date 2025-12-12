@@ -35,8 +35,8 @@ module.exports = {
     allow_ACAO: false, // Access-Control-Allow-Origin, allows any server/client to access data from the WebServer.
 
     // Map
-    map_tile_width: 420,
-    map_tile_height: 420,
+    map_tile_width: 800,
+    map_tile_height: 800,
 
     // The message that appears once a player spawns.
     // spawn_message: "You have spawned! Welcome to the game.\n"
@@ -56,11 +56,11 @@ module.exports = {
     max_heartbeat_interval: 300_000, // How long (in milliseconds) a socket can be disconnected before their tank self-destructs.
     respawn_delay: 0, // How long you have to wait to respawn in seconds. Set to 0 to disable.
 
-    bullet_spawn_offset: 1, // Where the bullet spawns, where 1 is fully outside the barrel and -1 is fully inside the barrel, and 0 is halfway between.
-    damage_multiplier: 1, // General damage multiplier everytime damage is dealt.
-    knockback_multiplier: 1.1, // General knockback multiplier everytime knockback is applied.
+    bullet_spawn_offset: 0.5, // Where the bullet spawns, where 1 is fully outside the barrel and -1 is fully inside the barrel, and 0 is halfway between.
+    damage_multiplier: 1.2, // General damage multiplier everytime damage is dealt.
+    knockback_multiplier: 1, // General knockback multiplier everytime knockback is applied.
     glass_health_factor: 2, // TODO: Figure out how the math behind this works.
-    room_bound_force: 0.01,// How strong the force is that confines entities to the map and portals apply to entities.
+    room_bound_force: 0.03,// How strong the force is that confines entities to the map and portals apply to entities.
     soft_max_skill: 0.59, // TODO: Find out what the intention behind the implementation of this configuration is.
 
     // When an entity reaches a level, this function is called and returns how many skill points that entity gets for reaching that level.
@@ -87,7 +87,7 @@ module.exports = {
     bot_name_prefix: "[AI] ", // This is prefixed before the bot's randomly chosen name.
 
     // The class that players and bots spawn as.
-    spawn_class: "basic",
+    spawn_class: "single",
 
     // How every entity regenerates their health.
     regenerate_tick: 100,
@@ -95,58 +95,22 @@ module.exports = {
     // Food
     food_types: [ // Possible food types outside the nest
         [1, [
-            [65, "egg"], [64, "triangle"], [45, "square"], [7, "pentagon"], [1, "hexagon"]
+            [1, "monogon"], [1/12*11, "duogon"], [1/12*10, "triangle"], [1/12*9, "square"], [1/12*8, "pentagon"], [1/12*7, "hexagon"], [1/12*6, "heptagon"], [1/12*5, "octogon"], [1/12*4, "nonagon"], [1/12*3, "decagon"], [1/12*2, "hendecagon"], [1/12, "dodecagon"]
         ]],
-        [1/50000, [
-            [625, "gem"], [125, "shinyTriangle"], [25, "shinySquare"], [5, "shinyPentagon"], [1, "shinyHexagon"]
-        ]],
-        [1/1000000, [
-            [1296, "jewel"], [216, "legendaryTriangle"], [36, "legendarySquare"], [6, "legendaryPentagon"], [1, "legendaryHexagon"]
-        ]]
     ],
     food_types_nest: [ // Possible food types in the nest
-        [1, [
-            [16, "pentagon"], [ 4, "betaPentagon"], [ 1, "alphaPentagon"]
-        ]]
     ],
     enemy_types_nest: [ // Possible enemy food types in the nest
-        [1, [
-            [1, "crasher"]
-        ]],
-        [1/20, [
-            [1, "sentryGun"], [1, "sentrySwarm"], [1, "sentryTrap"]
-        ]]
     ],
 
-    food_cap: 70, // Maximum number of regular food at any time.
-    food_cap_nest: 15, // Maximum number of nest food at any time.
-    enemy_cap_nest: 10, // Maximum number of enemy nest food at any time.
-    food_group_cap: 6, // Number of foods that random food groups spawn with
+    food_cap: 1000, // Maximum number of regular food at any time.
+    food_group_cap: 10, // Number of foods that random food groups spawn with
 
     // Bosses
     bosses_spawn: true,
     boss_spawn_cooldown: 260, // The delay (in seconds) between boss spawns.
     boss_spawn_delay: 6, // The delay (in seconds) between the boss spawn being announced and the boss(es) actually spawning.
-    boss_types: [{
-        bosses: ["eliteDestroyer", "eliteGunner", "eliteSprayer", "eliteBattleship", "eliteSpawner"],
-        amount: [5, 5, 4, 2, 1], chance: 2, nameType: "a",
-    },{
-        bosses: ["roguePalisade"],
-        amount: [4, 1], chance: 1, nameType: "castle",
-        message: "A strange trembling...",
-    },{
-        bosses: ["summoner", "eliteSkimmer", "nestKeeper"],
-        amount: [2, 2, 1], chance: 1, nameType: "a",
-        message: "A strange trembling...",
-    },{
-        bosses: ["paladin", "freyja", "zaphkiel", "nyx", "theia"],
-        amount: [1], chance: 0.01,
-        message: "The world tremors as the celestials are reborn anew!",
-    },{
-        bosses: ["julius", "genghis", "napoleon"],
-        amount: [1], chance: 0.1,
-        message: "The darkness arrives as the realms are torn apart!",
-    }],
+    boss_types: [],
 
     // How many members a team can have in comparison to an unweighed team.
     // Example: We have team A and B. If the weight of A is 2 and B is 1, then the game will try to give A twice as many members as B.
@@ -160,15 +124,9 @@ module.exports = {
     // If you want to change them, copy the values you want to change to the server's properties. Changing them here could break stuff!
     enable_food: true,
     gamemode_name_prefixes: [],
-    special_boss_spawns: false,
-    use_limited_waves: false,
-    mothership: false,
-    domination: false,
-    tiered_food: false,
     arena_shape: "rect",
     blackout: false,
     space_physics: false,
-    arms_race: false,
     clan_wars: false,
     growth: false,
     groups: false,

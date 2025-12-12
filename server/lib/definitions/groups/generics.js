@@ -96,7 +96,7 @@ Class.genericTank = {
     SHAPE: 0,
     MOTION_TYPE: "motor",
     FACING_TYPE: "toTarget",
-    SIZE: 12,
+    SIZE: 20,
     NO_SIZE_ANIMATION: false,
     MAX_CHILDREN: 0,
     DAMAGE_EFFECTS: false,
@@ -278,25 +278,24 @@ Class.swarm = {
     DIE_AT_RANGE: true,
     BUFF_VS_FOOD: true,
 };
-Class.baseSwarmTurret_swarm = {
-    PARENT: "swarm",
-    MOTION_TYPE: ["swarm", { turnVelocity: 10 }],
+Class.baseDrone = {
+    PARENT: "drone",
+    MOTION_TYPE: ["drone", { turnVelocity: 10 }],
     AI: { IGNORE_SHAPES: true },
     BODY: {
-        ACCELERATION: Class.swarm.BODY.ACCELERATION,
-        PENETRATION: Class.swarm.BODY.PENETRATION,
-        HEALTH: Class.swarm.BODY.HEALTH,
-        DAMAGE: Class.swarm.BODY.DAMAGE,
-        SPEED: Class.swarm.BODY.SPEED,
-        RESIST: Class.swarm.BODY.RESIST,
+        ACCELERATION: Class.drone.BODY.ACCELERATION,
+        PENETRATION: Class.drone.BODY.PENETRATION,
+        HEALTH: Infinity,
+        DAMAGE: Class.drone.BODY.DAMAGE,
+        SPEED: Class.drone.BODY.SPEED,
+        RESIST: Class.drone.BODY.RESIST,
         RANGE: 345,
-        DENSITY: Class.swarm.BODY.DENSITY,
-        PUSHABILITY: Class.swarm.BODY.PUSHABILITY,
+        DENSITY: Class.drone.BODY.DENSITY,
+        PUSHABILITY: Class.drone.BODY.PUSHABILITY,
         FOV: 1.7,
         KNOCKBACK: 15,
     },
 }
-Class.airblastBullet = { PARENT: "bullet", ALPHA: 0.5, BODY: { KNOCKBACK: 30 } }
 Class.trap = {
     LABEL: "Thrown Trap",
     TYPE: "trap",
@@ -341,19 +340,6 @@ Class.satellite = {
     CLEAR_ON_MASTER_UPGRADE: true,
     BUFF_VS_FOOD: true,
     MOTION_TYPE: 'motor'
-}
-Class.satellite_old = {
-    PARENT: "satellite",
-    TURRETS: [
-        {
-            POSITION: [28, 0, 0, 0, 360, 0],
-            TYPE: "genericEntity"
-        }
-    ],
-}
-Class.squareSatellite = {
-    PARENT: "satellite",
-    SHAPE: 4
 }
 
 Class.auraBase = {

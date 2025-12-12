@@ -128,13 +128,13 @@ exports.makeRearGunner = (type, name = -1) => {
     let cannons = [{
         POSITION: [19, 2, 1, 0, -2.5, 180, 0],
         PROPERTIES: {
-            SHOOT_SETTINGS: exports.combineStats([g.basic, g.pelleter, g.power, g.twin, { recoil: 4 }, { recoil: 1.8 }]),
+            SHOOT_SETTINGS: exports.combineStats([g.single, g.pelleter, g.power, g.twin, { recoil: 4 }, { recoil: 1.8 }]),
             TYPE: "bullet",
         },
     }, {
         POSITION: [19, 2, 1, 0, 2.5, 180, 0.5],
         PROPERTIES: {
-            SHOOT_SETTINGS: exports.combineStats([g.basic, g.pelleter, g.power, g.twin, { recoil: 4 }, { recoil: 1.8 }]),
+            SHOOT_SETTINGS: exports.combineStats([g.single, g.pelleter, g.power, g.twin, { recoil: 4 }, { recoil: 1.8 }]),
             TYPE: "bullet",
         },
     }, {
@@ -154,7 +154,7 @@ exports.makeBird = (type, name = -1, options = {}) => {
 
     // Thrusters
     let backRecoil = 0.5 * backRecoilFactor;
-    let thrusterProperties = { SHOOT_SETTINGS: exports.combineStats([g.basic, g.flankGuard, g.triAngle, g.thruster, { recoil: backRecoil }]), TYPE: "bullet", LABEL: "thruster" };
+    let thrusterProperties = { SHOOT_SETTINGS: exports.combineStats([g.single, g.flankGuard, g.triAngle, g.thruster, { recoil: backRecoil }]), TYPE: "bullet", LABEL: "thruster" };
     let shootyBois = [{
             POSITION: [16, 8, 1, 0, 0, 150, 0.1],
             PROPERTIES: thrusterProperties
@@ -588,7 +588,7 @@ exports.makeMenu = (name = -1, color = "mirror", shape = 0, overrideLabel = fals
             ASPECT: -1.4
         },
         PROPERTIES: {
-            SHOOT_SETTINGS: exports.combineStats([g.basic]),
+            SHOOT_SETTINGS: exports.combineStats([g.single]),
             TYPE: "bullet",
         },
     };
@@ -837,148 +837,6 @@ exports.makeCrasher = type => ({
         NO_LEAD: true,
     }
 });
-
-exports.makeRare = (type, level) => {
-    type = ensureIsClass(type);
-    return {
-        PARENT: "food",
-        LABEL: ["Shiny", "Legendary", "Shadow", "Rainbow", "Trans"][level] + " " + type.LABEL,
-        VALUE: [100, 500, 2000, 4000, 5000][level] * type.VALUE,
-        SHAPE: type.SHAPE,
-        SIZE: type.SIZE,
-        GLOW:  {
-            RADIUS: 2,
-            STRENGTH: 25,
-            COLOR: ["lightGreen", "teal", "darkGrey", "rainbow", "trans"][level],
-            ALPHA: 0.6
-        },
-        COLOR: ["lightGreen", "teal", "darkGrey", "rainbow", "trans"][level],
-        ALPHA: level == 2 ? 0.25 : 1,
-        BODY: {
-            DAMAGE: [1, 1, 2, 2.5, 2.5][level] * type.BODY.DAMAGE,
-            DENSITY: [1, 1, 2, 2.5, 2.5][level] * type.BODY.DENSITY,
-            HEALTH: [2, 4, 4, 6, 8][level] * type.BODY.HEALTH,
-            PENETRATION: [1.5, 1.5, 2, 2.5, 2.5][level] * type.BODY.PENETRATION,
-            ACCELERATION: type.BODY.ACCELERATION
-        },
-        DRAW_HEALTH: true,
-        INTANGIBLE: type.INTANGIBLE,
-        GIVE_KILL_MESSAGE: true,
-    }
-}
-
-const labyTierToHealth = {
-    0: 0.25,
-    1: 10,
-    2: 20,
-    3: 150,
-    4: 300
-};
-
-// not accurate values
-const labyRarityToScore = {
-    1: 5,
-    2: 10,
-    3: 40,
-    4: 100,
-    5: 250
-};
-
-const labyRarityToHealth = {
-    1: 2,
-    2: 4,
-    3: 6,
-    4: 8,
-    5: 10
-};
-
-exports.makeLaby = (type, tier, rarity, level, baseScale = 1) => {
-    type = ensureIsClass(type);
-    let usableSHAPE = Math.max(type.SHAPE, 3),
-        downscale = Math.cos(Math.PI / usableSHAPE),
-        healthMultiplier = Math.pow(5, level) - (level > 2 ? Math.pow(5, level) / Math.pow(5, level - 2) : 0);
-    return {
-        PARENT: 'food',
-        LABEL: ['', 'Beta ', 'Alpha ', 'Omega ', 'Gamma ', 'Delta '][level] + type.LABEL,
-        VALUE: util.getReversedJackpot(
-            Math.min(
-                5e6,
-                (tier == 0
-                    ? 30 * (level > 1 ? Math.pow(6, level - 1) : level) + 8
-                    : 30 * Math.pow(5, tier + level - 1)) *
-                    (labyRarityToScore[rarity] || 1)
-            )
-        ),
-        SHAPE: type.SHAPE,
-        SIZE: (type.SIZE * baseScale) / downscale ** level,
-        COLOR: type.COLOR,
-        ALPHA: type.ALPHA ?? 1,
-        BODY: {
-            DAMAGE: type.BODY.DAMAGE,
-            DENSITY: type.BODY.DENSITY,
-            HEALTH:
-                (labyTierToHealth[tier] || 1) *
-                healthMultiplier *
-                (labyRarityToHealth[rarity] || 1),
-            PENETRATION: type.BODY.PENETRATION,
-            PUSHABILITY: type.BODY.PUSHABILITY / (level + 1) || 0,
-            ACCELERATION: type.BODY.ACCELERATION,
-            
-            REGEN: 1e-18
-        },
-        INTANGIBLE: type.INTANGIBLE,
-        VARIES_IN_SIZE: false,
-        DRAW_HEALTH: type.DRAW_HEALTH && tier != 0,
-        GIVE_KILL_MESSAGE: type.GIVE_KILL_MESSAGE || level > 1,
-        GUNS: type.GUNS ?? [],
-        TURRETS: type.TURRETS ?? [],
-        PROPS: Array(level).fill().map((_, i) => ({
-            POSITION: [
-                20 * downscale ** (i + 1),
-                0,
-                0,
-                !(i & 1) ? 180 / usableSHAPE : 0,
-                1
-            ],
-            TYPE: [type, { COLOR: 'mirror' }]
-        }))
-    };
-};
-exports.makeRarities = (type) => {
-    const ct = type.charAt(0).toUpperCase() + type.slice(1);
-    const rarities = ["shiny", "legendary", "shadow", "rainbow", "trans"];
-    for (let i = 0; i < rarities.length; i++) {
-        const pn = `${rarities[i]}${ct}`;
-        Class[pn] = exports.makeRare(`${type}`, [i]);
-    }
-}
-
-//merry Christmas
-exports.makePresent = (outcolor, wrapcolor) => {
-    return {
-        PARENT: "food",
-        LABEL: "Present",
-        VALUE: 6e3,
-        SHAPE: 4,
-        SIZE: 25,
-        COLOR: outcolor,
-        BODY: {
-            DAMAGE: basePolygonDamage,
-            DENSITY: 50,
-            HEALTH: 10 * basePolygonHealth,
-            RESIST: 3,
-            PENETRATION: 1.1,
-            ACCELERATION: 0.02
-        },
-        DRAW_HEALTH: true,
-        PROPS: [
-            {
-                POSITION: [19.5, 0, 0, 0, 360, 1],
-                TYPE: ["healerSymbol", { COLOR: wrapcolor}]
-            }
-        ]
-    }
-}
 
 function rotatePoint(px, py, cx, cy, degrees) {
     const radians = degrees * (Math.PI / 180);

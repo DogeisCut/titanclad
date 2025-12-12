@@ -1,7 +1,4 @@
 module.exports = {
-	basePolygonDamage: 1,
-	basePolygonHealth: 2,
-
 	// SKILL DEFINITIONS
 	dfltskl: 9,
 	smshskl: 12,
@@ -76,14 +73,14 @@ module.exports = {
 		},
 	},
 	base: {
-	    ACCEL: 1.6,
-	    SPEED: 5.25,
-	    HEALTH: 20,
-	    DAMAGE: 3,
+	    ACCEL: 1.8,
+	    SPEED: 6.25,
+	    HEALTH: 50,
+	    DAMAGE: 2,
 	    RESIST: 1,
 	    PENETRATION: 1.05,
 	    REGEN: 0.01,
-	    FOV: 1.02,
+	    FOV: 1.5,
 	    DENSITY: 0.5,
 	}
 };

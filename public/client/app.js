@@ -2128,10 +2128,10 @@ import * as socketStuff from "./socketinit.js";
                 }
             }
         } else {
-            // Show only basic if no results found
+            // Show only single if no results found
             filteredTiles = tiles.filter(tile => {
                 const mockup = global.mockups[parseInt(tile.index)];
-                return mockup && mockup.className === 'basic';
+                return mockup && mockup.className === 'single';
             });
         }
         
@@ -2400,7 +2400,7 @@ import * as socketStuff from "./socketinit.js";
         if (global.searchQuery) {
             const resultsText = searchResults.length > 0 
                 ? `Found ${searchResults.length} tank${searchResults.length !== 1 ? 's' : ''} (showing upgrade paths)`
-                : "No tanks found - showing Basic";
+                : "No tanks found - showing Single";
             drawText(
                 resultsText,
                 global.screenWidth / 2,

@@ -1129,12 +1129,12 @@ class socketManager {
             body.protect();
             body.isPlayer = true;
             body.define(Config.spawn_class);
-            if (Class.menu_tanks) {
+            /*if (Class.menu_tanks) {
                 let string = Class.menu_tanks.UPGRADES_TIER_0[0];
-                if (string !== "basic") {
-                    Class.menu_addons.UPGRADES_TIER_0.push("basic")
+                if (string !== "single") {
+                    Class.menu_addons.UPGRADES_TIER_0.push("single")
                 }
-            }
+            }*/
             body.name = name;
             if (socket.permissions && socket.permissions.nameColor) {
                 body.nameColor = socket.permissions.nameColor;
@@ -1687,14 +1687,15 @@ class socketManager {
                     is = 0;
                 for (let j = 0; j < list.length; j++) {
                     let val = list[j].skill.score;
-                    if (val > is) {
+                    if (val >= is) {
                         is = val;
                         top = j;
                     }
                 }
-                if (is === 0) break;
                 let entry = list[top];
-                let color = entry.leaderboardColor ? entry.leaderboardColor + " 0 1 0 false" 
+                if (!entry) break;
+                let color = entry.leaderboardColor ? entry.leaderboardColor + " 0 1 0 false"   
+                    : Config.groups || (Config.mode == 'ffa' && !Config.tag) ? '11 0 1 0 false'  
                     : entry.color.compiled;
                 topTen.push({
                     id: entry.id,
@@ -1721,13 +1722,14 @@ class socketManager {
                     is = 0;
                 for (let j = 0; j < list.length; j++) {
                     let val = list[j].skill.score;
-                    if (val > is) {
+                    if (val >= is) {
                         is = val;
                         top = j;
                     }
                 }
                 if (is === 0) break;
                 let entry = list[top];
+                if (!entry) break;
                 topTen.push({
                     id: entry.id + 100, // Make independent id
                     data: [

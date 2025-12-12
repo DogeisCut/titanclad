@@ -322,27 +322,8 @@ class gameHandler {
                 }
             }, 1500);
         };
-
-        // Nest food/enemy spawn
-        if (Math.random() < 1 / 3 && global.gameManager.room.spawnable[TEAM_ENEMIES]) {
-            // Enemy spawn
-            if (Math.random() < 1 / 3 && this.enemyFoods.length < Config.enemy_cap_nest) {
-                const tile = ran.choose(global.gameManager.room.spawnable[TEAM_ENEMIES]).randomInside();
-                const o = spawnFoodEntity(tile, Config.enemy_types_nest);
-                this.enemyFoods.push(o);
-                setupCleanup(this.enemyFoods, o);
-            }
-            // Nest food spawn
-            if (this.nestFoods.length < Config.food_cap_nest) {
-                const tile = ran.choose(global.gameManager.room.spawnable[TEAM_ENEMIES]).randomInside();
-                for (let i = 0; i < totalFoods; i++) {
-                    const o = spawnFoodEntity(tile, Config.food_types_nest);
-                    this.nestFoods.push(o);
-                    setupCleanup(this.nestFoods, o);
-                }
-            }
-        } else if (this.foods.length < Config.food_cap) {
-            // Regular food spawn
+        
+        if (this.foods.length < Config.food_cap) {
             const tile = ran.choose(global.gameManager.room.spawnableDefault).randomInside();
             for (let i = 0; i < totalFoods; i++) {
                 const o = spawnFoodEntity(tile, Config.food_types);
@@ -369,7 +350,7 @@ class gameHandler {
             }
         }
         // Spawn bosses
-        if (this.checkUsers() && Config.bosses_spawn && !this.naturallySpawnedBosses.length && this.bossTimer++ > Config.boss_spawn_cooldown) {
+        if (this.checkUsers() && Config.bosses_spawn && Config.bosses_spawn.length > 0 && !this.naturallySpawnedBosses.length && this.bossTimer++ > Config.boss_spawn_cooldown) {
             this.bossTimer = -Config.boss_spawn_delay - 2;
             let selection = Config.boss_types[ran.chooseChance(...Config.boss_types.map((selection) => selection.chance))],
                 amount = ran.chooseChance(...selection.amount) + 1;
