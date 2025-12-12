@@ -129,6 +129,188 @@ Class.genericTank = {
     RESET_EVENTS: true,
     HITS_OWN_TYPE: "hardOnlyTanks"
 }
+Class.genericTier1Tank = {
+    PARENT: "genericTank",
+    SIZE: 24,
+    PROPS: [
+        {
+            TYPE: "circleDeco",
+            POSITION: {
+                SIZE: 20-4,
+                X: 0,
+                Y: 0,
+                ANGLE: 0,
+                LAYER: 1,
+            },
+        }
+    ]
+}
+Class.genericTier2Tank = {
+    PARENT: "genericTier1Tank",
+    SIZE: 28,
+    PROPS: [
+        {
+            TYPE: "circleDeco",
+            POSITION: {
+                SIZE: 20-4,
+                X: 0,
+                Y: 0,
+                ANGLE: 0,
+                LAYER: 1,
+            },
+        },
+        {
+            TYPE: "circleDeco",
+            POSITION: {
+                SIZE: 20-8,
+                X: 0,
+                Y: 0,
+                ANGLE: 0,
+                LAYER: 1,
+            },
+        },
+    ]
+}
+Class.genericTier3Tank = {
+    PARENT: "genericTier2Tank",
+    SIZE: 32,
+    PROPS: [
+        {
+            TYPE: "circleDeco",
+            POSITION: {
+                SIZE: 20-4,
+                X: 0,
+                Y: 0,
+                ANGLE: 0,
+                LAYER: 1,
+            },
+        },
+        {
+            TYPE: "circleDeco",
+            POSITION: {
+                SIZE: 20-8,
+                X: 0,
+                Y: 0,
+                ANGLE: 0,
+                LAYER: 1,
+            },
+        },
+        {
+            TYPE: "circleDeco",
+            POSITION: {
+                SIZE: 20-12,
+                X: 0,
+                Y: 0,
+                ANGLE: 0,
+                LAYER: 1,
+            },
+        },
+    ]
+}
+Class.genericTier4Tank = {
+    PARENT: "genericTier3Tank",
+    SIZE: 36,
+    PROPS: [
+        {
+            TYPE: "circleDeco",
+            POSITION: {
+                SIZE: 20-4,
+                X: 0,
+                Y: 0,
+                ANGLE: 0,
+                LAYER: 1,
+            },
+        },
+        {
+            TYPE: "circleDeco",
+            POSITION: {
+                SIZE: 20-8,
+                X: 0,
+                Y: 0,
+                ANGLE: 0,
+                LAYER: 1,
+            },
+        },
+        {
+            TYPE: "circleDeco",
+            POSITION: {
+                SIZE: 20-12,
+                X: 0,
+                Y: 0,
+                ANGLE: 0,
+                LAYER: 1,
+            },
+        },
+        {
+            TYPE: "circleDeco",
+            POSITION: {
+                SIZE: 20-16,
+                X: 0,
+                Y: 0,
+                ANGLE: 0,
+                LAYER: 1,
+            },
+        },
+    ]
+}
+Class.genericTier5Tank = {
+    PARENT: "genericTier4Tank",
+    SIZE: 40,
+    PROPS: [
+        {
+            TYPE: "circleDeco",
+            POSITION: {
+                SIZE: 20-4,
+                X: 0,
+                Y: 0,
+                ANGLE: 0,
+                LAYER: 1,
+            },
+        },
+        {
+            TYPE: "circleDeco",
+            POSITION: {
+                SIZE: 20-8,
+                X: 0,
+                Y: 0,
+                ANGLE: 0,
+                LAYER: 1,
+            },
+        },
+        {
+            TYPE: "circleDeco",
+            POSITION: {
+                SIZE: 20-12,
+                X: 0,
+                Y: 0,
+                ANGLE: 0,
+                LAYER: 1,
+            },
+        },
+        {
+            TYPE: "circleDeco",
+            POSITION: {
+                SIZE: 20-16,
+                X: 0,
+                Y: 0,
+                ANGLE: 0,
+                LAYER: 1,
+            },
+        },
+        {
+            TYPE: "circleDeco",
+            POSITION: {
+                SIZE: 1,
+                X: 0,
+                Y: 0,
+                ANGLE: 0,
+                LAYER: 1,
+            },
+        },
+    ]
+}
+
+
 Class.genericFlail = {
     PARENT: "genericTank",
     STAT_NAMES: statnames.flail,
@@ -278,6 +460,35 @@ Class.swarm = {
     DIE_AT_RANGE: true,
     BUFF_VS_FOOD: true,
 };
+Class.bigBaseDrone = {
+    PARENT: "drone",
+    AI: { IGNORE_SHAPES: true },
+    BODY: {
+        ACCELERATION: Class.drone.BODY.ACCELERATION,
+        PENETRATION: Class.drone.BODY.PENETRATION*2,
+        HEALTH: 4000,
+        DAMAGE: Class.drone.BODY.DAMAGE/5,
+        SPEED: Class.drone.BODY.SPEED,
+        RESIST: Class.drone.BODY.RESIST,
+        RANGE: 345,
+        DENSITY: Class.drone.BODY.DENSITY*2,
+        PUSHABILITY: Class.drone.BODY.PUSHABILITY,
+        FOV: 2.5,
+        KNOCKBACK: 75,
+    },
+    PROPS: [
+        {
+            TYPE: "triangleDeco",
+            POSITION: {
+                SIZE: 10,
+                X: 0,
+                Y: 0,
+                ANGLE: 60,
+                LAYER: 1,
+            },
+        }
+    ]
+}
 Class.baseDrone = {
     PARENT: "drone",
     AI: { IGNORE_SHAPES: true },

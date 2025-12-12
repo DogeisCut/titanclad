@@ -26,8 +26,9 @@
     - [ ] Change level caculation to be more gradual.\
     - [ ] Merge bullet health and penetration into just bullet penetration.
 - [ ] **Polygons**
-    - [ ] Decide on final polygon layout/score/health/etc (not sure about the duogons and monogons, at least having them be so beefy)
-    - [ ]
+    - [ ] Decide on final polygon layout/score/health/etc
+        - not sure about the duogons and monogons, at least having them be so beefy
+    - [ ] Change polygon spawning mecahnics for a more even spread and rarer polygons towards the center.
     - [ ] Radiance
         - [ ] Client rendering
         - [ ] Server

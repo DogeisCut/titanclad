@@ -195,7 +195,7 @@ Class.baseProtector = {
                 },
                 PROPERTIES: {
                     SHOOT_SETTINGS: combineStats([g.drone, g.baseProtector]),
-                    TYPE: "baseDrone",
+                    TYPE: "bigBaseDrone",
                     AUTOFIRE: true,
                 }
             },

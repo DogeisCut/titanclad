@@ -63,7 +63,7 @@ function generatePolygonFoodClassDefinition(polygonSideCount, polygonColor, shap
 	}
 }
 
-Class.monogon = generatePolygonFoodClassDefinition(1, "guiwhite", [[0,0],[0,0]])
+Class.monogon = generatePolygonFoodClassDefinition(1, "#ffffff", [[0,0],[0,0]])
 Class.duogon = generatePolygonFoodClassDefinition(2, "yellow", [[-1,0],[1,0]])
 Class.triangle = generatePolygonFoodClassDefinition(3, "gold")
 Class.square = generatePolygonFoodClassDefinition(4, "orange")

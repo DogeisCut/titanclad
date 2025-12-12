@@ -1069,7 +1069,7 @@ class Entity extends EventEmitter {
                     text = text.slice(0, -4);
                     text += "!";
                 } else {
-                    text += " died by mysterious means...";
+                    text += " died by mysterious means.";
                 }
                 global.gameManager.socketManager.broadcast(text);
             }
@@ -1090,7 +1090,7 @@ class Entity extends EventEmitter {
             // Prepare it and clear the collision array.
             killText = killText.slice(0, -5);
             if (killText === "You have been kille") {
-                killText = "You have died by mysterious means...";
+                killText = "You have died by mysterious means.";
             }
             if (!this.dontSendDeathMessage) {
                 this.sendMessage(killText + ".");
@@ -1107,7 +1107,7 @@ class Entity extends EventEmitter {
                     }
                     usurptText = usurptText.slice(0, -4) + "!";
                 } else {
-                    usurptText += " died by mysterious means...";
+                    usurptText += " died by mysterious means.";
                 }
                 global.gameManager.socketManager.broadcast(usurptText);
             }

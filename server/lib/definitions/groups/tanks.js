@@ -30,7 +30,7 @@ tier0: {
 
 tier1: {
     Class.double = {
-        PARENT: "genericTank",
+        PARENT: "genericTier1Tank",
         LABEL: "Double",
         DANGER: 4,
         GUNS: [
@@ -50,22 +50,10 @@ tier1: {
                 }
             }, 0.5)
         ],
-        PROPS: [
-            {
-                TYPE: "circleDeco",
-                POSITION: {
-                    SIZE: 10,
-                    X: 0,
-                    Y: 0,
-                    ANGLE: 0,
-                    LAYER: 1,
-                },
-            }
-        ]
     },
     
     Class.stack = {
-        PARENT: "genericTank",
+        PARENT: "genericTier1Tank",
         LABEL: "Stack",
         DANGER: 4,
         GUNS: [
@@ -100,18 +88,6 @@ tier1: {
                 }
             }
         ],
-        PROPS: [
-            {
-                TYPE: "circleDeco",
-                POSITION: {
-                    SIZE: 10,
-                    X: 0,
-                    Y: 0,
-                    ANGLE: 0,
-                    LAYER: 1,
-                },
-            }
-        ]
     }
 }
 
