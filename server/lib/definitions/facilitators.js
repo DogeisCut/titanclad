@@ -128,13 +128,13 @@ exports.makeRearGunner = (type, name = -1) => {
     let cannons = [{
         POSITION: [19, 2, 1, 0, -2.5, 180, 0],
         PROPERTIES: {
-            SHOOT_SETTINGS: exports.combineStats([g.single, g.pelleter, g.power, g.twin, { recoil: 4 }, { recoil: 1.8 }]),
+            SHOOT_SETTINGS: exports.combineStats([g.bullet, g.pelleter, g.power, g.twin, { recoil: 4 }, { recoil: 1.8 }]),
             TYPE: "bullet",
         },
     }, {
         POSITION: [19, 2, 1, 0, 2.5, 180, 0.5],
         PROPERTIES: {
-            SHOOT_SETTINGS: exports.combineStats([g.single, g.pelleter, g.power, g.twin, { recoil: 4 }, { recoil: 1.8 }]),
+            SHOOT_SETTINGS: exports.combineStats([g.bullet, g.pelleter, g.power, g.twin, { recoil: 4 }, { recoil: 1.8 }]),
             TYPE: "bullet",
         },
     }, {
@@ -154,7 +154,7 @@ exports.makeBird = (type, name = -1, options = {}) => {
 
     // Thrusters
     let backRecoil = 0.5 * backRecoilFactor;
-    let thrusterProperties = { SHOOT_SETTINGS: exports.combineStats([g.single, g.flankGuard, g.triAngle, g.thruster, { recoil: backRecoil }]), TYPE: "bullet", LABEL: "thruster" };
+    let thrusterProperties = { SHOOT_SETTINGS: exports.combineStats([g.bullet, g.flankGuard, g.triAngle, g.thruster, { recoil: backRecoil }]), TYPE: "bullet", LABEL: "thruster" };
     let shootyBois = [{
             POSITION: [16, 8, 1, 0, 0, 150, 0.1],
             PROPERTIES: thrusterProperties
@@ -588,7 +588,7 @@ exports.makeMenu = (name = -1, color = "mirror", shape = 0, overrideLabel = fals
             ASPECT: -1.4
         },
         PROPERTIES: {
-            SHOOT_SETTINGS: exports.combineStats([g.single]),
+            SHOOT_SETTINGS: exports.combineStats([g.bullet]),
             TYPE: "bullet",
         },
     };

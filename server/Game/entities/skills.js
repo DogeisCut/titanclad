@@ -23,11 +23,11 @@ function apply(f, x) {
 }
 
 class Skill {
-    constructor(inital = [0, 0, 0, 0, 0, 0, 0, 0, 0]) {
+    constructor(inital = Array(9).fill(0)) {
         // Just skill stuff.
         this.raw = inital;
         this.caps = [];
-        this.setCaps([ Config.skill_cap, Config.skill_cap, Config.skill_cap, Config.skill_cap, Config.skill_cap, Config.skill_cap, Config.skill_cap, Config.skill_cap, Config.skill_cap ]);
+        this.setCaps(Array(9).fill(Config.skill_cap));
         this.name = [
             "Reload",
             "Bullet Penetration",

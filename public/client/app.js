@@ -2729,7 +2729,7 @@ import * as socketStuff from "./socketinit.js";
         drawText("Score: " + util.formatLargeNumber(Math.round(gui.__s.getScore())), x + width / 2 + 0.5 - scorelength, y + height / 2 + 9, 18, color.guiwhite, "center");
         ctx[2].lineWidth = 4;
         var name = global.player.name.substring(7, global.player.name.length + 1);
-        drawText(name, Math.round(x + width / 2) + 1.5, Math.round(y - 15 - 4) - 1, 48, global.nameColor = "#ffffff" ? color.guiwhite : global.nameColor, "center");
+        drawText(name, Math.round(x + width / 2) + 1.5, Math.round(y - 15 - 4) - 1, 48, global.nameColor == "#ffffff" ? color.guiwhite : global.nameColor, "center");
     }
 
     function handleSpeedMonitor() {
@@ -2944,7 +2944,7 @@ import * as socketStuff from "./socketinit.js";
             }
             y += global.canSkill || global.showSkill ? (alcoveSize / 2.2 /*+ spacing * 2*/) * statMenu.get() : 0;
         }
-        drawText("Leaderboard", Math.round(x + len / 2) + 0.5, Math.round(y - 6) + 0.5, 32, color.guiwhite, "center");
+        drawText("Scoreboard", Math.round(x + len / 2) + 0.5, Math.round(y - 6) + 0.5, 32, color.guiwhite, "center");
         y += 7;
 
         for (let i = 0; i < lb.data.length; i++) {

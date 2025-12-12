@@ -280,20 +280,19 @@ Class.swarm = {
 };
 Class.baseDrone = {
     PARENT: "drone",
-    MOTION_TYPE: ["drone", { turnVelocity: 10 }],
     AI: { IGNORE_SHAPES: true },
     BODY: {
         ACCELERATION: Class.drone.BODY.ACCELERATION,
-        PENETRATION: Class.drone.BODY.PENETRATION,
-        HEALTH: Infinity,
-        DAMAGE: Class.drone.BODY.DAMAGE,
+        PENETRATION: Class.drone.BODY.PENETRATION*2,
+        HEALTH: 2000,
+        DAMAGE: Class.drone.BODY.DAMAGE/10,
         SPEED: Class.drone.BODY.SPEED,
         RESIST: Class.drone.BODY.RESIST,
         RANGE: 345,
-        DENSITY: Class.drone.BODY.DENSITY,
+        DENSITY: Class.drone.BODY.DENSITY*2,
         PUSHABILITY: Class.drone.BODY.PUSHABILITY,
-        FOV: 1.7,
-        KNOCKBACK: 15,
+        FOV: 2.5,
+        KNOCKBACK: 50,
     },
 }
 Class.trap = {

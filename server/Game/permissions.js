@@ -31,7 +31,7 @@ module.exports = [
     {
         key: process.env.BETA_TESTER,
         discordID: "0",
-        nameColor: "#ffffff",
+        nameColor: "#ffCCCC",
         class: "arrasMenu_betaTester",
         level: 3,
         name: "unnamed#0000",
@@ -40,7 +40,7 @@ module.exports = [
     {
         key: process.env.DEVELOPER,
         discordID: "0",
-        nameColor: "#ffffff",
+        nameColor: "#ff0000",
         class: "developer",
         administrator: true,
         level: 3,

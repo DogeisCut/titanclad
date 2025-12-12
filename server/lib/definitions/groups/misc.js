@@ -89,7 +89,7 @@ Class.destroyerDominator = {
         {
             POSITION: [15.25, 6.75, 1, 0, 0, 0, 0],
             PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([g.single, g.destroyerDominator]),
+                SHOOT_SETTINGS: combineStats([g.bullet, g.destroyerDominator]),
                 TYPE: "bullet"
             }
         },
@@ -105,21 +105,21 @@ Class.gunnerDominator = {
         {
             POSITION: [14.25, 3, 1, 0, -2, 0, 0.5],
             PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([g.single, g.gunnerDominator]),
+                SHOOT_SETTINGS: combineStats([g.bullet, g.gunnerDominator]),
                 TYPE: "bullet"
             }
         },
         {
             POSITION: [14.25, 3, 1, 0, 2, 0, 0.5],
             PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([g.single, g.gunnerDominator]),
+                SHOOT_SETTINGS: combineStats([g.bullet, g.gunnerDominator]),
                 TYPE: "bullet"
             }
         },
         {
             POSITION: [15.85, 3, 1, 0, 0, 0, 0],
             PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([g.single, g.gunnerDominator]),
+                SHOOT_SETTINGS: combineStats([g.bullet, g.gunnerDominator]),
                 TYPE: "bullet"
             }
         },
@@ -151,10 +151,10 @@ Class.trapperDominator = {
 // MISCELLANEOUS TANKS
 Class.baseProtector = {
     PARENT: "genericTank",
-    LABEL: "Base",
-    UPGRADE_LABEL: "Base Protector",
+    LABEL: "Defender",
+    NAME: "Defender",
     ON_MINIMAP: false,
-    SIZE: 64,
+    SIZE: 128,
     DAMAGE_CLASS: 0,
     ACCEPTS_SCORE: false,
     CAN_BE_ON_LEADERBOARD: false,
@@ -167,6 +167,7 @@ Class.baseProtector = {
         spd: 1,
         str: 1,
     }),
+    MAX_CHILDREN: 8,
     BODY: {
         SPEED: 0,
         HEALTH: 1e4,
@@ -179,7 +180,78 @@ Class.baseProtector = {
         RESIST: 10000,
         HETERO: 0,
     },
-    FACING_TYPE: ["spin", {speed: 0.04}],
+    FACING_TYPE: ["spin", { speed: 0.04 }],
+    GUNS: [
+        ...weaponArray([
+            {
+                POSITION: {
+                    LENGTH: 5,
+                    WIDTH: 4,
+                    ASPECT: 1.5,
+                    X: 8,
+                    Y: 0,
+                    ANGLE: 0,
+                    DELAY: 0
+                },
+                PROPERTIES: {
+                    SHOOT_SETTINGS: combineStats([g.drone, g.baseProtector]),
+                    TYPE: "baseDrone",
+                    AUTOFIRE: true,
+                }
+            },
+            ...weaponMirror({
+                POSITION: {
+                    LENGTH: 4,
+                    WIDTH: 2,
+                    ASPECT: 1.5,
+                    X: 8,
+                    Y: 0,
+                    ANGLE: 33,
+                    DELAY: 0.5
+                },
+                PROPERTIES: {
+                    SHOOT_SETTINGS: combineStats([g.drone, g.baseProtector]),
+                    TYPE: "baseDrone",
+                    AUTOFIRE: true,
+                }
+            })
+        ], 4)
+    ],
+    TURRETS: [
+        {
+            TYPE: ["octogonDecoBlack", {FACING_TYPE: ["noFacing", { angle: Math.PI / 8 }]}],
+            POSITION: {
+                SIZE: 25,
+                X: 0,
+                Y: 0,
+                ANGLE: 0,
+                LAYER: 0,
+                ARC: 0
+            },
+        },
+    ],
+    PROPS: [
+        {
+            TYPE: "sides10DecoBlack",
+            POSITION: {
+                SIZE: 14,
+                X: 0,
+                Y: 0,
+                ANGLE: 0,
+                LAYER: 1,
+            },
+        },
+        {
+            TYPE: "circleDeco",
+            POSITION: {
+                SIZE: 10,
+                X: 0,
+                Y: 0,
+                ANGLE: 0,
+                LAYER: 1,
+            },
+        }
+    ]
 };
 
 Class.mothership = {
@@ -262,7 +334,7 @@ Class.arenaCloser = {
     GUNS: [{
         POSITION: [14, 10, 1, 0, 0, 0, 0],
         PROPERTIES: {
-            SHOOT_SETTINGS: combineStats([g.single, g.arenaCloser]),
+            SHOOT_SETTINGS: combineStats([g.bullet, g.arenaCloser]),
             TYPE: [ "bullet", { LAYER: 12 } ]
         }
     }]
@@ -293,28 +365,28 @@ Class.antiTankMachineGun = {
         {
             POSITION: [15, 2.5, 1, 0, 2, 0, 0.2],
             PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([g.single, g.op, {reload: 0.5, health: 100, damage: 100, recoil: 0, spray: 0.1, speed: 2, maxSpeed: 2}]),
+                SHOOT_SETTINGS: combineStats([g.bullet, g.op, {reload: 0.5, health: 100, damage: 100, recoil: 0, spray: 0.1, speed: 2, maxSpeed: 2}]),
                 TYPE: "bullet",
             }
         },
         {
             POSITION: [15, 2.5, 1, 0, -2, 0, 0.2],
             PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([g.single, g.op, {reload: 0.5, health: 100, damage: 100, recoil: 0, spray: 0.1, speed: 2, maxSpeed: 2}]),
+                SHOOT_SETTINGS: combineStats([g.bullet, g.op, {reload: 0.5, health: 100, damage: 100, recoil: 0, spray: 0.1, speed: 2, maxSpeed: 2}]),
                 TYPE: "bullet",
             }
         },
         {
             POSITION: [1, 2.5, 1, 0, 0, 0, 0],
             PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([g.single, g.op, {reload: 0.5, health: 100, damage: 100, recoil: 0, spray: 0.1, speed: 2, maxSpeed: 2}]),
+                SHOOT_SETTINGS: combineStats([g.bullet, g.op, {reload: 0.5, health: 100, damage: 100, recoil: 0, spray: 0.1, speed: 2, maxSpeed: 2}]),
                 TYPE: "bullet",
             }
         },
         {
             POSITION: [16.5, 3.5, 1, 0, 0, 0, 0],
             PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([g.single, g.op, {reload: 0.5, health: 100, damage: 100, recoil: 0, spray: 0.1, speed: 2, maxSpeed: 2}]),
+                SHOOT_SETTINGS: combineStats([g.bullet, g.op, {reload: 0.5, health: 100, damage: 100, recoil: 0, spray: 0.1, speed: 2, maxSpeed: 2}]),
                 TYPE: "bullet",
             }
         },
@@ -446,7 +518,7 @@ for (let i = 0; i < 60; i++) {
         POSITION: [2, 8, 1, -150, 0, 360 / 60 * i, spawnDelay],
         PROPERTIES: {
             SHOOT_SETTINGS: combineStats([
-                g.single,
+                g.bullet,
                 { shudder: 0, speed: 2.7, spray: 0, reload: 0.8, recoil: 0, range: 0.15 },
             ]),
             SYNCS_SKILLS: true,
@@ -477,7 +549,7 @@ for (let i = 0; i < 2; i++) {
     Class.serverPortal.GUNS.push({
         POSITION: [2, 14, 1, 2.5, 0, 0, i],
         PROPERTIES: {
-        SHOOT_SETTINGS: combineStats([g.single,{damage: 0, speed: 0, maxSpeed: 0, reload: 0.4, recoil: 0, size: 3}]),
+        SHOOT_SETTINGS: combineStats([g.bullet,{damage: 0, speed: 0, maxSpeed: 0, reload: 0.4, recoil: 0, size: 3}]),
             TYPE: "portalAura",
             SYNCS_SKILLS: true,
             AUTOFIRE: true,

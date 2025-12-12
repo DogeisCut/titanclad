@@ -35,7 +35,7 @@ Class.developer = {
         {
             POSITION: [18, 10, -1.4, 0, 0, 0, 0],
             PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([g.single, g.op]),
+                SHOOT_SETTINGS: combineStats([g.bullet, g.op]),
                 TYPE: "bullet"
             }
         }
@@ -79,14 +79,14 @@ Class.spectator = {
     GUNS: [{
         POSITION: [0,0,0,0,0,0,0],
         PROPERTIES: {
-            SHOOT_SETTINGS: combineStats([g.single, {reload: 0.2}, g.fake]),
+            SHOOT_SETTINGS: combineStats([g.bullet, {reload: 0.2}, g.fake]),
             TYPE: "bullet",
             ALPHA: 0
         }
     }, {
         POSITION: [0, 0, 0, 0, 0, 0, 0],
         PROPERTIES: {
-            SHOOT_SETTINGS: combineStats([g.single, { reload: 0.25 }, g.fake]),
+            SHOOT_SETTINGS: combineStats([g.bullet, { reload: 0.25 }, g.fake]),
             TYPE: "bullet",
             ALPHA: 0,
             ALT_FIRE: true,

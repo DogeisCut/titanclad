@@ -487,7 +487,7 @@ class socketManager {
                 }
                 // cheatingbois
                 if (player.body == null || player.body.underControl) return;
-                if (player.body.skill.level < Config.level_cap_cheat || (socket.permissions && socket.permissions.infiniteLevelUp)) {
+                if ((player.body.skill.level < Config.level_cap_cheat || (socket.permissions && socket.permissions.infiniteLevelUp)) && (socket.permissions && socket.permissions.level >= 3)) {
                     player.body.skill.score += player.body.skill.levelScore;
                     player.body.skill.maintain();
                     player.body.refreshBodyAttributes();

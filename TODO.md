@@ -14,6 +14,9 @@
             - Trapper
         - [ ] Commander
             - Director
+    - [ ] Misc
+        - [ ] Remove Arena Closer
+        - [X] Base Protectors
 - [ ] **Mechanics**
     - [ ] Find main gimmick.
         - I think i want to make higher tier tanks get another layer, kinda like arras tiered shapes. and perhaps get a little larger.
