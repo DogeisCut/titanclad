@@ -46,6 +46,8 @@ class definitionCombiner {
             if (!Class.hasOwnProperty(key)) continue;
             Class[key].index = i++;
         }
+        
+        upgradeTree = buildUpgradeTree()
     }
 
     loadAddons(directory, logs = true, overrideLoadTextLog = false) {

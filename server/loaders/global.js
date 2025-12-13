@@ -697,4 +697,5 @@ global.buildUpgradeTree = (startTank = 'tank') => {
     }  
       
     return tree;  
-}  
+}
+global.upgradeTree = {}
