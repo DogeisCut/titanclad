@@ -5,10 +5,10 @@ require('./tanks.js')
 const g = require('../gunvals.js')
 
 // OBSTACLES
-Class.circleWall = {
+Class.rock = {
     TYPE: "wall",
     DAMAGE_CLASS: 1,
-    LABEL: "Wall",
+    LABEL: "Rock",
     FACING_TYPE: "turnWithSpeed",
     SHAPE: 0,
     CAN_GO_OUTSIDE_ROOM: true,
@@ -28,7 +28,7 @@ Class.circleWall = {
     ACCEPTS_SCORE: false
 }
 Class.wall = {
-    PARENT: "blocker",
+    PARENT: "rock",
     LABEL: "Wall",
     SIZE: 25,
     SHAPE: 4,
