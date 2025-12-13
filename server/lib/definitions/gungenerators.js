@@ -4,7 +4,21 @@ const g = require('./gunvals.js')
 exports.gunGenerators = {
     bulletCannon: ({ length = 20, width = 10, hasBase = false, angle = 0, x = 0, y = 0, delay = 0 } = {}, extraStats = []) => {
         return [
-
+            {
+                POSITION: {
+                    LENGTH: length,
+                    WIDTH: width,
+                    ASPECT: 1,
+                    X: x,
+                    Y: y,
+                    ANGLE: angle,
+                    DELAY: delay
+                },
+                PROPERTIES: {
+                    SHOOT_SETTINGS: combineStats([g.bullet, ...extraStats]),
+                    TYPE: "bullet",
+                }
+            }
         ]
     },
     droneSpawner: ({ length = 16, width = 8, droneTier = 0, angle = 0, x = 0, y = 0, delay = 0 } = {}, extraStats = []) => {

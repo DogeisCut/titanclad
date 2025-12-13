@@ -17,21 +17,7 @@ tier0: {
         LABEL: "Shooter",
         DANGER: 4,
         GUNS: [
-            {
-                POSITION: {
-                    LENGTH: 20,
-                    WIDTH: 10,
-                    ASPECT: 1,
-                    X: 0,
-                    Y: 0,
-                    ANGLE: 0,
-                    DELAY: 0
-                },
-                PROPERTIES: {
-                    SHOOT_SETTINGS: combineStats([g.bullet]),
-                    TYPE: "bullet",
-                }
-            }
+            ...gunGenerators.bulletCannon()
         ],
     }
     Class.commander = {
@@ -164,4 +150,3 @@ Class.tank.UPGRADES_TIER_0 = ["shooter", "commander", "blocker"]
         Class.captain.UPGRADES_TIER_2 = ["major"]
             Class.major.UPGRADES_TIER_3 = ["colonel"]
                 Class.colonel.UPGRADES_TIER_4 = ["general"]
-    

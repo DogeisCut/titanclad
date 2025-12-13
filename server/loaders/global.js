@@ -659,3 +659,42 @@ global.loadAllMockups = (logText = true) => {
     if (logText) console.log("Finished created " + mockupData.length + " MockupEntities.");
     if (logText) console.log("Mockups generated in " + util.rounder(mockupsLoadEndTime - mockupsLoadStartTime, 3) + " milliseconds.\n");
 }
+
+global.buildUpgradeTree = (startTank = 'tank') => {  
+    const tree = {};  
+    const visited = new Set();  
+    const queue = [{tank: startTank, path: []}];  
+      
+    while (queue.length > 0) {  
+        const {tank: tankName, path} = queue.shift();  
+
+        if (visited.has(tankName)) continue;  
+        visited.add(tankName);  
+          
+        const tank = Class[tankName];  
+        if (!tank) continue;  
+
+        const upgrades = [];  
+        for (let tier = 0; tier <= 9; tier++) {  
+            const tierKey = `UPGRADES_TIER_${tier}`;  
+            if (tank[tierKey]) {  
+                upgrades.push(...tank[tierKey]);  
+            }  
+        }  
+          
+        let current = tree;  
+        for (const segment of path) {  
+            current = current[segment];  
+        }  
+        current[tankName] = {};  
+          
+        for (const upgrade of upgrades) {  
+            queue.push({  
+                tank: upgrade,  
+                path: [...path, tankName]  
+            });  
+        }  
+    }  
+      
+    return tree;  
+}  
