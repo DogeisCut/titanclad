@@ -4,18 +4,16 @@
     - [ ] Level 30 Tanks
     - [ ] Level 15 Tanks
     - [ ] Level 0 Tanks
-        - [ ] Decide if this tier should even exist
-    - [ ] Tank
+    - [X] Tank
         - [X] Single
-            - [ ] Double
-                - [ ] Stack
-                    - Mini Streamliner
+            - [X] Double
+                - [X] Stack
             - [ ] Thumper
                 - Pounder
             - [ ] Sniper
         - [ ] Blocker
             - Trapper
-        - [ ] Commander
+        - [X] Commander
             - Director
     - [ ] Misc
         - [ ] Remove Arena Closer

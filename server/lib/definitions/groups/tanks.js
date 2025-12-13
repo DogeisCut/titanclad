@@ -39,23 +39,7 @@ tier0: {
         LABEL: "Commander",
         DANGER: 5,
         GUNS: [
-            {
-                POSITION: {
-                    LENGTH: 16,
-                    WIDTH: 12,
-                    ASPECT: 1.6,
-                    X: 0,
-                    Y: 0,
-                    ANGLE: 0,
-                    DELAY: 0
-                },
-                PROPERTIES: {
-                    MAX_CHILDREN: 4,
-                    AUTOFIRE: true,
-                    SHOOT_SETTINGS: combineStats([g.drone]),
-                    TYPE: "drone",
-                }
-            }
+            ...gunGenerators.droneSpawner()
         ],
     }
     Class.blocker = {
@@ -89,6 +73,15 @@ tier1: {
                     TYPE: "bullet",
                 }
             }, 0.5)
+        ],
+    }
+
+    Class.captain = {
+        PARENT: "genericTier1Tank",
+        LABEL: "Captain",
+        DANGER: 5,
+        GUNS: [
+            ...weaponMirror(gunGenerators.droneSpawner({ angle: 45 }), 0.5)
         ],
     }
 }
@@ -131,10 +124,44 @@ tier2: {
             }
         ],
     }
+    
+    Class.major = {
+        PARENT: "genericTier2Tank",
+        LABEL: "Major",
+        DANGER: 5,
+        GUNS: [
+            ...weaponArray(gunGenerators.droneSpawner(), 3)
+        ],
+    }
+}
+
+tier3: {
+    Class.colonel = {
+        PARENT: "genericTier3Tank",
+        LABEL: "Colonel",
+        DANGER: 5,
+        GUNS: [
+            ...weaponArray(gunGenerators.droneSpawner(), 4)
+        ],
+    }
+}
+
+tier4: {
+    Class.general = {
+        PARENT: "genericTier4Tank",
+        LABEL: "General",
+        DANGER: 5,
+        GUNS: [
+            ...weaponArray(gunGenerators.droneSpawner(), 5)
+        ],
+    }
 }
 
 Class.tank.UPGRADES_TIER_0 = ["shooter", "commander", "blocker"]
     Class.shooter.UPGRADES_TIER_1 = ["double"]
         Class.double.UPGRADES_TIER_2 = ["stack"]
-    Class.commander.UPGRADES_TIER_1 = []
+    Class.commander.UPGRADES_TIER_1 = ["captain"]
+        Class.captain.UPGRADES_TIER_2 = ["major"]
+            Class.major.UPGRADES_TIER_3 = ["colonel"]
+                Class.colonel.UPGRADES_TIER_4 = ["general"]
     
