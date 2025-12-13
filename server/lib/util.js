@@ -209,3 +209,38 @@ exports.isStringified = (str) => {
         return JSON.parse(str);  
     } catch(e) { return str } 
 }
+
+exports.getClassDPS = (classDefinition, reloadSkillPoints = 1) => {  
+    const def = typeof classDefinition === 'string' ? Class[classDefinition] : classDefinition;  
+    if (!def || !def.GUNS) return 0;  
+      
+    let totalDPS = 0;  
+      
+    for (const gun of def.GUNS) {  
+        if (!gun.PROPERTIES || !gun.PROPERTIES.SHOOT_SETTINGS) continue;  
+          
+        const shootSettings = gun.PROPERTIES.SHOOT_SETTINGS;  
+          
+        const damagePerShot = shootSettings.damage || 1;  
+          
+        const baseReloadTime = shootSettings.reload || 1;  
+        const effectiveReloadTime = baseReloadTime / reloadSkillPoints;  
+        const shotsPerSecond = 1 / effectiveReloadTime;
+          
+        totalDPS += damagePerShot * shotsPerSecond;  
+    }  
+      
+    return totalDPS;  
+}
+
+exports.getTimeToKill = (attackerClass, targetEntity, reloadSkillPoints = 1) => {  
+    const attackerDPS = getTankDPS(attackerClass, reloadSkillPoints);  
+    if (attackerDPS <= 0) return Infinity;  
+      
+    const targetHealth = targetEntity.health.amount;  
+    const targetResist = targetEntity.health.resist || 0;  
+    const effectiveDamagePerSecond = attackerDPS * (1 - targetResist);  
+      
+    if (effectiveDamagePerSecond <= 0) return Infinity;  
+    return targetHealth / effectiveDamagePerSecond;  
+}
