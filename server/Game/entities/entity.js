@@ -99,6 +99,7 @@ class Entity extends EventEmitter {
         this.maxX = 0;
         this.maxY = 0;
         this.collidingBond = false;
+        this.lastDamageTime = 0;
         // Optimized AABB calculation and update
         this.updateAABB = (active) => {
             if (!active || (!this.collidingBond && this.bond != null)) {
@@ -942,7 +943,9 @@ class Entity extends EventEmitter {
             this.damageReceived = 0;
             return 0;
         }
+        this.lastDamageTime = this.lastDamageTime || 0;  
         if (this.damageReceived > 0) {
+            this.lastDamageTime = Date.now();  
             let damageInflictor = []
             let damageTool = []
 

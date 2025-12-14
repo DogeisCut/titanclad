@@ -334,11 +334,22 @@ class gameHandler {
     }
 
     regenHealth() {
-        for (let instance of entities.values()) {
-            if (instance.health.amount) {
-                instance.health.regenerate();
-            }
-        }
+        const now = Date.now();  
+        for (let instance of entities.values()) {  
+            const timeSinceDamage = instance.lastDamageTime ? (now - instance.lastDamageTime) / 1000 : Infinity;  
+            const isFastRegen = timeSinceDamage >= 30;  
+            
+            let regenMultiplier = isFastRegen ? 10 : 1; // 10% regen when damaged recently  
+            
+            if (instance.health.amount) {  
+                const baseRegen = instance.REGEN * instance.skill.rgn;  
+                const adjustedRegen = baseRegen * regenMultiplier;  
+                
+                const finalRegen = isFastRegen ? adjustedRegen : adjustedRegen;  
+                
+                instance.health.amount = Math.min(instance.health.amount + finalRegen, instance.health.max);  
+            }  
+        } 
     };
     
     maintainloop = () => {   
