@@ -1217,7 +1217,105 @@ class io_scaleWithMaster extends IO {
     }
 }
 
+class ControllerState {
+    constructor(stateMachine) {
+        this.stateMachine = stateMachine
+        this.controller = stateMachine.controller
+        this.body = this.controller.body
+    }
+    loop() {}
+    exit() {}
+    enter() {}
+}
+class ControllerStateMachine {
+    constructor(controller) {
+        this.states = {}
+        this.currentState = undefined
+        this.controller = controller
+    }
+    loop() {
+        if (this.currentState)
+            this.states[this.currentState].loop()
+    }
+    transition(to) {
+        if (!to) throw "Invalid State Transition!"
+        if (this.currentState === to) return
+        if (this.currentState) 
+            this.states[this.currentState].exit()
+        this.currentState = to
+        if (this.currentState)
+            this.states[this.currentState].enter()
+    }
+}
+class FarmingControllerState extends ControllerState {
+    // TODO:
+    // - sweep behavior
+    //  Higher level tanks tend to be able to destory clusters of low level shapes efficently. These tanks will often swipe their drones or bullets through a large cluster for a score boost.
+    //  Not all bots should do this, as some bots would be considerate to lower level tanks
+    // - Desprate Ram
+    //  Often times, if multiple low level players are attacking a high level shape, and its at low health, players will attempt to ram it to get the kill
+    // - Commitment
+    //  The longer a bot has been trying to kill a specific shape, the higher it scores in its target calculation, meaning its less likely to switch targets
+    constructor(stateMachine) {
+        super(stateMachine)
+    }
+    loop() {
+        this.controller.io = {
+            goal: {
+                x: this.body.x,
+                y: this.body.y
+            },
+            target: {
+                x: 0,
+                y: 0
+            },
+            main: false,
+            alt: false,
+            fire: false,
+            power: 0,
+        }
 
+        const maxTimeWasted = 20 // Max time I should spend attacking a shape (dont waste time on big health shapes I cant kill)
+        const sqrRange = this.body.fov * this.body.fov;
+        const validCandidates = [];
+        for (const e of targetableEntities.values()) {
+            if (io_advancedBotAI.validate(e, this.body, sqrRange)) {
+                validCandidates.push(e);
+            }
+        }
+        
+        const validFood = validCandidates/* I just want to note that its funny to remove this filter and watch the bots try to farm enemy bots */.filter(entity=>entity.type == "food")/**/
+        .filter(food=>util.getTimeToKill(this.body, food)<maxTimeWasted)
+        .sort((a,b)=>{   
+            const distA = (this.body.x - a.x) ** 2 + (this.body.y - a.y) ** 2;  
+            const distB = (this.body.x - b.x) ** 2 + (this.body.y - b.y) ** 2;  
+            
+            const scoreA = a.skill.score - distA / 100; 
+            const scoreB = b.skill.score - distB / 100;  
+            
+            return scoreB - scoreA;  
+        })
+
+        if (validFood.length!=0) {
+            const bestFood = validFood[0]
+            const distanceToBestFoodSqr = (this.body.x - bestFood.x) ** 2 + (this.body.y - bestFood.y) ** 2
+            const minimumDistanceToFood = (bestFood.size + this.body.size + 100) ** 2
+            this.controller.io.target = {
+                x: bestFood.x - this.body.x,
+                y: bestFood.y - this.body.y
+            }
+            this.controller.io.main = true
+            this.controller.io.fire = true
+            if (distanceToBestFoodSqr>=minimumDistanceToFood) {
+                this.controller.io.goal = {
+                    x: bestFood.x,
+                    y: bestFood.y
+                }
+                this.controller.io.power = 1
+            }
+        }
+    }
+}
   
 class io_advancedBotAI extends IO {  
     constructor(body, opts = {}) {  
@@ -1238,121 +1336,23 @@ class io_advancedBotAI extends IO {
 
         this.personality = opts.personality || ran.choose(Object.values(personalities));  
 
-        class State {
-            constructor(stateMachine) {
-                this.stateMachine = stateMachine
-            }
-            loop() {}
-            exit() {}
-            enter() {}
+        this.io = {
+            goal: {
+                x: this.body.x,
+                y: this.body.y
+            },
+            target: {
+                x: 0,
+                y: 0
+            },
+            main: false,
+            alt: false,
+            fire: false,
+            power: 0,
         }
-        class StateMachine {
-            constructor() {
-                this.states = {}
-                this.currentState = undefined
-            }
-            loop() {
-                if (this.currentState)
-                    return this.states[this.currentState].loop()
-                return {
-                    goal: {
-                        x: this.body.x,
-                        y: this.body.y
-                    },
-                    main:false,
-                    alt:false,
-                    fire:false
-                }
-            }
-            transition(to) {
-                if (!to) throw "Invalid State Transition!"
-                if (this.currentState === to) return
-                if (this.currentState) 
-                    this.states[this.currentState].exit()
-                this.currentState = to
-                if (this.currentState)
-                    this.states[this.currentState].enter()
-            }
-        }
-        // AI states!
-        class FarmingState extends State {
-            // TODO:
-            // - sweep behavior
-            //  Higher level tanks tend to be able to destory clusters of low level shapes efficently. These tanks will often swipe their drones or bullets through a large cluster for a score boost.
-            //  Not all bots should do this, as some bots would be considerate to lower level tanks
-            // - Desprate Ram
-            //  Often times, if multiple low level players are attacking a high level shape, and its at low health, players will attempt to ram it to get the kill
-            // - Commitment
-            //  The longer a bot has been trying to kill a specific shape, the higher it scores in its target calculation, meaning its less likely to switch targets
-            constructor(stateMachine, controller) {
-                super(stateMachine)
-                this.controller = controller
-                this.body = controller.body
-            }
-            loop() {
-                const maxTimeWasted = 20 // Max time I should spend attacking a shape (dont waste time on big health shapes I cant kill)
-                const sqrRange = this.body.fov * this.body.fov;
-                const validCandidates = [];
-                for (const e of targetableEntities.values()) {
-                    if (this.controller.validate(e, this.body, sqrRange)) {
-                        validCandidates.push(e);
-                    }
-                }
-                
-                const validFood = validCandidates/* I just want to note that its funny to remove this filter and watch the bots try to farm enemy bots */.filter(entity=>entity.type == "food")/**/
-                .filter(food=>util.getTimeToKill(this.body, food)<maxTimeWasted)
-                .sort((a,b)=>{   
-                    const distA = (this.body.x - a.x) ** 2 + (this.body.y - a.y) ** 2;  
-                    const distB = (this.body.x - b.x) ** 2 + (this.body.y - b.y) ** 2;  
-                    
-                    const scoreA = a.skill.score - distA / 100; 
-                    const scoreB = b.skill.score - distB / 100;  
-                    
-                    return scoreB - scoreA;  
-                })
-
-                if (validFood.length!=0) {
-                    const bestFood = validFood[0]
-                    const distanceToBestFoodSqr = (this.body.x - bestFood.x) ** 2 + (this.body.y - bestFood.y) ** 2
-                    const minimumDistanceToFood = (bestFood.size + this.body.size + 100) ** 2
-                    let goal = {
-                        x: bestFood.x,
-                        y: bestFood.y
-                    }
-                    if (distanceToBestFoodSqr<minimumDistanceToFood) {
-                        goal = {
-                            x: this.body.x,
-                            y: this.body.y
-                        }
-                    }
-                    
-
-                    return {
-                        target: {
-                            x: bestFood.x - this.body.x,
-                            y: bestFood.y - this.body.y
-                        },
-                        goal,
-                        main:true,
-                        alt:false,
-                        fire:true,
-                        power: 1
-                    }
-                }
-
-                return {
-                    goal: {
-                        x: this.body.x,
-                        y: this.body.y
-                    },
-                    main:false,
-                    alt:false,
-                    fire:false
-                }
-            }
-        }
-        this.stateMachine = new StateMachine()
-        this.stateMachine.states.farm = new FarmingState(this.stateMachine, this)
+    
+        this.stateMachine = new ControllerStateMachine(this)
+        this.stateMachine.states.farm = new FarmingControllerState(this.stateMachine)
         this.stateMachine.transition("farm")
     } 
 
@@ -1365,11 +1365,11 @@ class io_advancedBotAI extends IO {
         // For best results it may be worth randomly disabling one of the movement keys when the bot is moving diagonally. and how this is done and chosen is based on personality
     }
     //from nearestDifferentMaster (Modified for Advanced Bots)
-    validate(e, m, sqrRange) {
+    static validate(e, m, sqrRange) {
         // e is the target entity
         // m is myself
-        const myMaster = this.body.master.master;
-        const aiSettings = this.body.aiSettings;
+        const myMaster = m.master.master;
+        const aiSettings = m.aiSettings;
         const theirMaster = e.master.master;
         if (e.health.amount <= 0) return false; // dont target things with 0 or less health (dont target dead things)
         if (theirMaster.team === myMaster.team || theirMaster.team === TEAM_ROOM) return false; //Dont target my team or Room (walls)
@@ -1377,7 +1377,7 @@ class io_advancedBotAI extends IO {
         if (e.bond) return false; // dont target tank turrets (auto turrets)
         if (e.invuln || e.godmode || theirMaster.godmode || theirMaster.passive || myMaster.passive) return false; //dont target god mode
         if (isNaN(e.dangerValue)) return false; // Dont target things with fucked Danger values
-        if (!(aiSettings.seeInvisible || this.body.isArenaCloser || e.alpha > 0.5)) return false; //Dont target arena closer or invisible things (arena closer scary :()
+        if (!(aiSettings.seeInvisible || m.isArenaCloser || e.alpha > 0.5)) return false; //Dont target arena closer or invisible things (arena closer scary :()
         // Check if this thing is in range
         if ((e.x - m.x) * (e.x - m.x) >= sqrRange) return false;
         if ((e.y - m.y) * (e.y - m.y) >= sqrRange) return false;
@@ -1385,8 +1385,8 @@ class io_advancedBotAI extends IO {
     }
 
     think() {
-        const result = this.stateMachine.loop()
-        return result
+        this.stateMachine.loop()
+        return this.io
     }
 
 }  
