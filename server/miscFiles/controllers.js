@@ -1367,6 +1367,8 @@ class io_advancedBotAI extends IO {
     }
     //from nearestDifferentMaster (Modified for Advanced Bots)
     static validate(e, m, sqrRange) {
+        const xRange = sqrRange;  
+        const yRange = sqrRange * (9/16) * (9/16) // Simulate the screens of a player.
         // e is the target entity
         // m is myself
         const myMaster = m.master.master;
@@ -1380,8 +1382,8 @@ class io_advancedBotAI extends IO {
         if (isNaN(e.dangerValue)) return false; // Dont target things with fucked Danger values
         if (!(aiSettings.seeInvisible || m.isArenaCloser || e.alpha > 0.5)) return false; //Dont target arena closer or invisible things (arena closer scary :()
         // Check if this thing is in range
-        if ((e.x - m.x) * (e.x - m.x) >= sqrRange) return false;
-        if ((e.y - m.y) * (e.y - m.y) >= sqrRange) return false;
+        if ((e.x - m.x) * (e.x - m.x) >= xRange) return false;
+        if ((e.y - m.y) * (e.y - m.y) >= yRange) return false;
         return true;
     }
 

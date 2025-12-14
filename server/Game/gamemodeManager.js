@@ -9,13 +9,7 @@ class gamemodeManager {
 
     request(type) {
         if (type == "start") {
-            if (Config.special_boss_spawns) this.gameSiege.start(Config.maze_type ?? false);
-            if (Config.ASSAULT) this.gameAssault.start();
-            if (Config.tag) Config.tag_data.initAndStart();
-            if (Config.domination) this.gameDomination.start();
-            if (Config.mothership) this.gameMothership.start();
             if (Config.maze_type !== undefined) this.gameMaze.generate();
-            if (Config.OUTBREAK) this.gameOutbreak.start();
         }
         if (type == "loop") {
             global.gameManager.lagLogger.set();
