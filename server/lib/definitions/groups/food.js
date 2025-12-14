@@ -168,7 +168,6 @@ exports.requestPolygon = function (sides) {
 Config.food_types = [[1,[]]]
 for (let i = 3; i <= 50; i++) {
     const poly = exports.requestPolygon(i)
-    console.log(poly)
     Config.food_types[0][1].push([poly.rarity, poly.className])
 }
 

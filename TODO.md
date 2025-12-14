@@ -24,7 +24,7 @@
             - Not really good enough for the "main gimmick" though
     - [ ] Change score deduction on death
         - Score is reduced half, but gets stronger the higher you are past max level (60). The idea is if you died at like level 60, you'd respawn at level 30. and If you died at like level 600, you'd probably spawn at level 60 or something.
-    - [ ] Change level caculation to be more gradual.
+    - [ ] Change level caculation to be more gradual. (so you get to like level 60 wayyyy further)
     - [ ] Merge bullet health and penetration into just bullet penetration.
     - [ ] Shared XP for kills like scenexe (could give percentage notification)
     - [ ] Upgrade Queueing (like diep)

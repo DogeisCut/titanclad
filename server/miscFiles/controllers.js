@@ -1241,6 +1241,10 @@ better bot AI suggestions:
 - And based on personality, most of these behaviors can briefly randomly turn off to simulate mistakes or player quirks
 */
 
+// You know, it'd be really cool to implement "A* pathfinding", and store an array of list of goal locations.
+// We'd get more natrual movement that way and it'd be easier to make them avoid shapes n stuff
+// Problem is ive never implemented such an algorithm before, we'd need to make some sort of internal grid for bots
+
 class ControllerState {
     constructor(stateMachine) {
         this.stateMachine = stateMachine
@@ -1317,7 +1321,14 @@ class FarmingControllerState extends ControllerState {
         }
 
         const validFood = validCandidates/* I just want to note that its funny to remove this filter and watch the bots try to farm enemy bots */.filter(entity=>entity.type == "food")/**/
-        .filter(food=>util.getTimeToKill(this.body, food)<maxTimeWasted)
+        /* ################################################ */
+        /* ################## HEY WAFFZ ################### */
+        /* ################################################ */
+        /* Read \/                                          */
+            
+        // I dont think util.getTimeToKill should be trusted this way, as its very inaccurate
+        // Instead of outright filtering shapes (aside from rediciously long ones) we should apply a penalty for the scoring too. 
+        .filter(food => util.getTimeToKill(this.body, food) < maxTimeWasted)
         .sort((a,b)=>{   
             const distA = (this.body.x - a.x) ** 2 + (this.body.y - a.y) ** 2;  
             const distB = (this.body.x - b.x) ** 2 + (this.body.y - b.y) ** 2;  
@@ -1356,6 +1367,9 @@ class FarmingControllerState extends ControllerState {
 
 class WanderControllerState extends ControllerState {
     //If there is nothing to do, wander towards the center of the stage
+    // TODO: 
+    // - Bots should honestly just pick a random point on the map with a bias towards the center and a smaller bias to the corners
+    // - Bots look very stupid wandering around while not changing their angle. Of course, bots shouldnt change their angle all the time
     constructor(stateMachine) {
         super(stateMachine)
         this.centerRadius = Math.min(global.gameManager.room.width,global.gameManager.room.height)
@@ -1427,7 +1441,7 @@ class io_advancedBotAI extends IO {
         this.stateMachine.states.wander = new WanderControllerState(this.stateMachine)
     } 
 
-    /* HELPER FUNCTIONS: intended to be used within states */
+    /* HELPER FUNCTIONS: intended to be used within or after states */
     avoidRammingIntoStuffLikeShapesWhileMovingAsToNotBeADumbass() {
         // Bots will move a slightly different direction until their movement path doesnt intersect with something damaging... like shapes...
     }
