@@ -145,7 +145,14 @@ class MockupEntityProp {
         }
         this.imageInterpolation = set.IMAGE_INTERPOLATION != null ? set.IMAGE_INTERPOLATION : 'bilinear'
         if (set.COLOR != null) {
-            if (typeof set.COLOR === "number" || typeof set.COLOR === "string") {
+            if (Array.isArray(set.COLOR) && set.COLOR.length === 3) {  
+                const [r, g, b] = set.COLOR;  
+                const hex = '#' +   
+                    Math.round(r).toString(16).padStart(2, '0') +   
+                    Math.round(g).toString(16).padStart(2, '0') +   
+                    Math.round(b).toString(16).padStart(2, '0');  
+                this.colorUnboxed.base = hex;
+            } else if (typeof set.COLOR === "number" || typeof set.COLOR === "string") {
                 if (!isNaN(set.COLOR) && !isNaN(parseFloat(set.COLOR)) || /^[a-zA-Z]*$/.test(set.COLOR))
                     this.colorUnboxed.base = set.COLOR; 
             }
@@ -226,7 +233,14 @@ class MockupEntity {
         }
         this.imageInterpolation = set.IMAGE_INTERPOLATION ?? "bilinear";
         if (set.COLOR != null) {
-            if (typeof set.COLOR === "number" || typeof set.COLOR === 'string')
+            if (Array.isArray(set.COLOR) && set.COLOR.length === 3) {  
+                const [r, g, b] = set.COLOR;  
+                const hex = '#' +   
+                    Math.round(r).toString(16).padStart(2, '0') +   
+                    Math.round(g).toString(16).padStart(2, '0') +   
+                    Math.round(b).toString(16).padStart(2, '0');  
+                this.colorUnboxed.base = hex;
+            } else if (typeof set.COLOR === "number" || typeof set.COLOR === 'string')
                 this.colorUnboxed.base = set.COLOR;
             else if (typeof set.COLOR === "object")
                 this.colorUnboxed = {

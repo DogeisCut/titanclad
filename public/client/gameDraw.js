@@ -260,6 +260,15 @@ var gameDraw = {
     getColor: (colorNumber, ctx, x1, y1, x2, y2) => {
         if (colorNumber == undefined || colorNumber == null) return gameDraw.color.black;
         if (colorNumber[0] == '#') return colorNumber;
+        if (Array.isArray(colorNumber) && colorNumber.length === 3) {  
+            const r = Math.max(0, Math.min(255, Math.round(colorNumber[0])));  
+            const g = Math.max(0, Math.min(255, Math.round(colorNumber[1])));  
+            const b = Math.max(0, Math.min(255, Math.round(colorNumber[2])));  
+            return '#' +   
+                r.toString(16).padStart(2, '0') +   
+                g.toString(16).padStart(2, '0') +   
+                b.toString(16).padStart(2, '0');  
+        }
         if (util.isNumeric(colorNumber)) colorNumber = parseInt(colorNumber);
         // Gradient color
         if (colorNumber.gradient && ctx) {

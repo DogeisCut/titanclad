@@ -24,15 +24,16 @@
             - Not really good enough for the "main gimmick" though
     - [ ] Change score deduction on death
         - Score is reduced half, but gets stronger the higher you are past max level (60). The idea is if you died at like level 60, you'd respawn at level 30. and If you died at like level 600, you'd probably spawn at level 60 or something.
-    - [ ] Change level caculation to be more gradual.\
+    - [ ] Change level caculation to be more gradual.
     - [ ] Merge bullet health and penetration into just bullet penetration.
     - [ ] Shared XP for kills like scenexe (could give percentage notification)
     - [ ] Upgrade Queueing (like diep)
         - I want to implement a server and client-side feature where players can hold `,` and press a skill number or click it to queue up skill points to automatically invest when you have points. There would be a config value for maximum queued skill points. Holding `M` would do the same thing but queue up to fill an entire skill bar. Holding either `,` or `M` will make the skill bars show themselves as if you were hovering over them. Entities store a 1 dimensional "skill queue" where the indexes or names of all the skills are stored in order of addition, the client can read its own skill queue so it can render it, but the server does all the processing. This system would ideally replace the way clients upgrade stats currently, instead interfacing with the queue to upgrade rather than always directly upgrading stats
 - [ ] **Polygons**
-    - [ ] Decide on final polygon layout/score/health/etc
+    - [X] Decide on final polygon layout/score/health/etc
         - not sure about the duogons and monogons, at least having them be so beefy
     - [ ] Change polygon spawning mecahnics for a more even spread and rarer polygons towards the center.
+    - [ ] Dynamic polygons (defs made at runtime when needed)
     - [ ] Radiance
         - [ ] Client rendering
         - [ ] Server
@@ -50,3 +51,4 @@
     - [ ] Tank Tree
     - [ ] Death Screen
     - [ ] Disconnect Screen
+    - [ ] Make stuff the same color as the border use a darker border color.

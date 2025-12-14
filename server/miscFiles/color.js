@@ -32,7 +32,16 @@ class Color {
 	set allowBrightnessInvert (value) { this.#allowBrightnessInvert = value; this.recompile() }
 
     //lets just say we have to deal with some kind of color value and we dont know what it is
-    interpret (color) {
+	interpret(color) {
+		if (Array.isArray(color) && color.length === 3) {  
+			const r = Math.max(0, Math.min(255, Math.round(color[0])));  
+			const g = Math.max(0, Math.min(255, Math.round(color[1])));  
+			const b = Math.max(0, Math.min(255, Math.round(color[2])));  
+			color = '#' +   
+				r.toString(16).padStart(2, '0') +   
+				g.toString(16).padStart(2, '0') +   
+				b.toString(16).padStart(2, '0');  
+    	}
     	switch (typeof color) {
     		case 'number':
     			this.#base = color;

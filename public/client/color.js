@@ -1,7 +1,7 @@
 var color = {
     // Themes
     "normal": {
-        "blue": "#5c90f0",
+        "blue": "#8886ffff",
         "green": "#7dc475",
         "red": "#dd7173",
         "magenta": "#d48cd1",
