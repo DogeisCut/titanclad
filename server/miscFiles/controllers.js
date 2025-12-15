@@ -1242,7 +1242,9 @@ better bot AI suggestions:
 */
 
 // This pathfinding is cool n all but its laggy as hell, and super inaccurate.
-// TODO: look further into this. Im thinking having some sort of grid all entities share or individual entities have grids that only cover thier FOV
+// TODO: look further into this. Im thinking having some sort of grid all entities share or individual entities have grids that only cover their FOV
+// EDIT: ok i optimized it a bit
+// also sometimes locks up then causes ERR_WORKER_OUT_OF_MEMORY when running for a while and idk why
 class PathfindingGrid {  
     constructor(room, cellSize = 50) {  
         this.cellSize = cellSize;  
@@ -1259,7 +1261,7 @@ class PathfindingGrid {
         this.grid.fill(0)
     }
       
-    updateGrid(body) {  
+    updateGrid(body, ignore) {  
         const now = Date.now();  
         if (now - this.lastUpdate < 500) return;  
         this.lastUpdate = now;  
@@ -1271,14 +1273,15 @@ class PathfindingGrid {
         }  
           
         for (const entity of global.entities.values()) {  
-            if (entity.team === body.team ||   
+            if ((ignore && entity.id === ignore.id) ||
+                entity.team === body.team ||   
                 entity.health.amount <= 0 ||   
                 entity.bond ||  
                 entity.master.team === body.master.team) {  
                 continue;  
             }  
               
-            this.markEntityAsObstacle(entity, body);  
+            this.markEntityAsObstacle(entity, body, ignore);  
         }  
     }  
       
@@ -1484,6 +1487,7 @@ class AStarPathfinder {
 		return path.reverse()
 	}
 }
+
 // ISSUE: pathfinding doesnt like to work when the target is inside an obsticle, and since polygons are obsticles it sometimes causes issues
 class io_pathfinding extends IO {  
     constructor(body, opts = {}) {  
@@ -1497,7 +1501,20 @@ class io_pathfinding extends IO {
     }  
       
     think(input) {  
-        this.grid.updateGrid(this.body)
+        function getEntitiesAtPosition(x, y, radius = null) {  
+            let results = [];  
+            for (const entity of entities.values()) {  
+                let dx = entity.x - x;  
+                let dy = entity.y - y;  
+                let distSq = dx * dx + dy * dy;  
+                let thresholdSq = (radius || entity.size) ** 2;  
+                if (distSq <= thresholdSq) {  
+                    results.push(entity);  
+                }  
+            }  
+            return results;  
+        }
+        this.grid.updateGrid(this.body, getEntitiesAtPosition(input.goal.x, input.goal.y, 5)[0])
         if (!input.goal) return {};  
           
         const startGridX = ((this.body.x / this.grid.cellSize) | 0) + this.grid.halfWidth
