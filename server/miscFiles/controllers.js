@@ -1241,10 +1241,7 @@ better bot AI suggestions:
 - And based on personality, most of these behaviors can briefly randomly turn off to simulate mistakes or player quirks
 */
 
-// This pathfinding is cool n all but its laggy as hell, and super inaccurate.
-// TODO: look further into this. Im thinking having some sort of grid all entities share or individual entities have grids that only cover their FOV
-// EDIT: ok i optimized it a bit
-// also sometimes locks up then causes ERR_WORKER_OUT_OF_MEMORY when running for a while and idk why
+// TODO: give bots a jolt or smth if they are too close to the same area for a bit while trying to follow a path
 class PathfindingGrid {  
     constructor(room, cellSize = 60) {  
         this.cellSize = cellSize;  
