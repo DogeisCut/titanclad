@@ -1246,7 +1246,7 @@ better bot AI suggestions:
 // EDIT: ok i optimized it a bit
 // also sometimes locks up then causes ERR_WORKER_OUT_OF_MEMORY when running for a while and idk why
 class PathfindingGrid {  
-    constructor(room, cellSize = 50) {  
+    constructor(room, cellSize = 60) {  
         this.cellSize = cellSize;  
         this.width = Math.ceil(room.width / cellSize);  
         this.height = Math.ceil(room.height / cellSize);  
@@ -1284,29 +1284,37 @@ class PathfindingGrid {
         }  
     }  
       
-    markEntityAsObstacle(entity, us) {  
-        const halfSize = entity.realSize + us.realSize + 20
-        const sizeCells = Math.ceil(halfSize / this.cellSize) + 1
-        
-        const centerGridX = ((entity.x / this.cellSize) | 0) + this.halfWidth  
-        const centerGridY = ((entity.y / this.cellSize) | 0) + this.halfHeight  
-    
-        const startX = Math.max(0, centerGridX - sizeCells)  
-        const endX = Math.min(this.width - 1, centerGridX + sizeCells) 
-        const startY = Math.max(0, centerGridY - sizeCells)  
-        const endY = Math.min(this.height - 1, centerGridY + sizeCells) 
-          
-        for (let y = startY; y <= endY; y++) {  
+    markEntityAsObstacle(entity, us) {
+        const halfSize = entity.realSize + us.realSize
+        const sizeCells = Math.ceil(halfSize / this.cellSize)
+
+        const centerGridX = ((entity.x / this.cellSize) | 0) + this.halfWidth
+        const centerGridY = ((entity.y / this.cellSize) | 0) + this.halfHeight
+
+        const startX = Math.max(0, centerGridX - sizeCells)
+        const endX = Math.min(this.width - 1, centerGridX + sizeCells)
+        const startY = Math.max(0, centerGridY - sizeCells)
+        const endY = Math.min(this.height - 1, centerGridY + sizeCells)
+
+        for (let y = startY; y <= endY; y++) {
             const worldY = (y - this.halfHeight) * this.cellSize + this.cellSize * 0.5
-            for (let x = startX; x <= endX; x++) {  
+            for (let x = startX; x <= endX; x++) {
                 const worldX = (x - this.halfWidth) * this.cellSize + this.cellSize * 0.5
-                if (Math.abs(worldX - entity.x) <= halfSize &&   
-                    Math.abs(worldY - entity.y) <= halfSize) {  
-                    this.grid[y * this.width + x] = 1  
+                const dx = Math.abs(worldX - entity.x)
+                const dy = Math.abs(worldY - entity.y)
+                const dist = Math.max(dx, dy)
+
+                if (dist <= halfSize) {
+                    const t = 1 - dist / halfSize
+                    const penalty = Math.min(255, (t * t) * 200 | 0)
+                    const index = y * this.width + x
+                    if (penalty > this.grid[index]) {
+                        this.grid[index] = penalty
+                    }
                 }
-            }  
-        }  
-    }  
+            }
+        }
+    }
 }
 class MinHeap {
     constructor(scoreArray) {
@@ -1316,11 +1324,12 @@ class MinHeap {
 
     push(nodeIndex) {
         const items = this.items
+
+        const HARD_LIMIT = 20000
+        if (items.length >= HARD_LIMIT) return
+
+        let i = items.length
         items.push(nodeIndex)
-        if (this.items.length > 5000) { // ugly code but i'd prefer the server to NOT crash!
-            this.items.length = 0
-        }
-        let i = items.length - 1
 
         while (i > 0) {
             const parentIndex = ((i - 1) / 2) | 0
@@ -1334,38 +1343,39 @@ class MinHeap {
 
     pop() {
         const items = this.items
-		const root = items[0]
-		const last = items.pop()
+        if (items.length === 0) return -1
+        const root = items[0]
+        const last = items.pop()
 
-		if (items.length > 0) {
-			let i = 0
-			const length = items.length
+        if (items.length > 0) {
+            let i = 0
+            const length = items.length
 
-			while (true) {
-				let left = i * 2 + 1
-				let right = left + 1
-				if (left >= length) break
+            while (true) {
+                let left = i * 2 + 1
+                let right = left + 1
+                if (left >= length) break
 
-				let smallest = right < length &&
-					this.scoreArray[items[right]] < this.scoreArray[items[left]]
-					? right
-					: left
+                let smallest = (right < length &&
+                    this.scoreArray[items[right]] < this.scoreArray[items[left]])
+                    ? right
+                    : left
 
-				if (this.scoreArray[last] <= this.scoreArray[items[smallest]]) break
+                if (this.scoreArray[last] <= this.scoreArray[items[smallest]]) break
 
-				items[i] = items[smallest]
-				i = smallest
-			}
+                items[i] = items[smallest]
+                i = smallest
+            }
 
-			items[i] = last
-		}
+            items[i] = last
+        }
 
-		return root
-	}
+        return root
+    }
 
-	get size() {
-		return this.items.length
-	}
+    get size() {
+        return this.items.length
+    }
 }
 class AStarPathfinder {  
     constructor(gridObject) {  
@@ -1377,8 +1387,10 @@ class AStarPathfinder {
         this.cameFrom = new Int32Array(cellCount)
         this.closed = new Uint8Array(cellCount)
 
+        this.inOpen = new Uint8Array(cellCount)
+
         this.openHeap = new MinHeap(this.fScore)
-        this.heuristicWeight = 1.1
+        this.heuristicWeight = 1.3
     }  
       
     findPath(startX, startY, endX, endY) {  
@@ -1386,13 +1398,21 @@ class AStarPathfinder {
         const maxExpansions = 6000
         
         const width = this.gridObject.width
+        const height = this.gridObject.height
         const grid = this.gridObject.grid
         const cellCount = this.gridObject.cellCount
+
+        const clamp = (v, a, b) => Math.max(a, Math.min(b, v))
+        startX = clamp(startX | 0, 0, width - 1)
+        startY = clamp(startY | 0, 0, height - 1)
+        endX = clamp(endX | 0, 0, width - 1)
+        endY = clamp(endY | 0, 0, height - 1)
 
         const startIndex = startY * width + startX
         const endIndex = endY * width + endX
 
         this.closed.fill(0)
+        this.inOpen.fill(0)
         this.openHeap.items.length = 0
 
         for (let i = 0; i < cellCount; i++) {
@@ -1403,13 +1423,16 @@ class AStarPathfinder {
 
         this.gScore[startIndex] = 0
 		this.fScore[startIndex] = this.heuristic(startX, startY, endX, endY)
-		this.openHeap.push(startIndex)
+        this.openHeap.push(startIndex)
+        this.inOpen[startIndex] = 1
 
 		while (this.openHeap.size > 0) {
             const current = this.openHeap.pop()
+            if (current === -1) break
             if (++expansions > maxExpansions) {
                 break
             }
+            if (this.closed[current]) continue
 			if (current === endIndex) {
 				return this.reconstructPath(current, width)
 			}
@@ -1420,9 +1443,10 @@ class AStarPathfinder {
 			const cy = (current / width) | 0
 
 			for (let neighbor of this.getNeighbors(cx, cy)) {
-				if (this.closed[neighbor]) continue
+                if (this.closed[neighbor]) continue
 
-                const obstaclePenalty = grid[neighbor] ? 50 : 0 // obstacles arent treated as hard blockers since stuff in this game is soft or can be killed.
+                const obstaclePenalty = grid[neighbor]
+                if (obstaclePenalty >= 255) continue
 
 				const nx = neighbor % width
 				const ny = (neighbor / width) | 0
@@ -1441,8 +1465,17 @@ class AStarPathfinder {
 
 				this.cameFrom[neighbor] = current
 				this.gScore[neighbor] = tentativeGScore
-				this.fScore[neighbor] = tentativeGScore + this.heuristic(nx, ny, endX, endY) * this.heuristicWeight
-				this.openHeap.push(neighbor)
+                this.fScore[neighbor] = tentativeGScore + this.heuristic(nx, ny, endX, endY) * this.heuristicWeight
+                
+				// only push if it's not already in open, duplicates are costly
+                if (!this.inOpen[neighbor]) {
+                    this.openHeap.push(neighbor)
+                    this.inOpen[neighbor] = 1
+                } else {
+                    // if already in open, still push a cheaper value only if heap size allows
+                    // (this keeps correctness but reduces constant duplicate growth)
+                    this.openHeap.push(neighbor)
+                }
 			}
 		}
 

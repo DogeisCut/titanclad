@@ -26,7 +26,7 @@ module.exports = {
 
             properties: { // This overrides settings in the config.js file, providing the selected gamemode doesn't also override it.
                 teams: 2,
-                bot_cap: 16,
+                bot_cap: 32,
             }
         },
     ],
@@ -83,13 +83,8 @@ module.exports = {
     bot_skill_upgrade_chances: [1, 1, 3, 4, 4, 4, 4, 2, 1, 1], // The chances of a bot upgrading a specific skill when skill upgrades are available.
     bot_class_upgrade_chances: [1, 5, 20, 37, 37], // The chances of a bot upgrading a specific amount of times before it stops upgrading.
     bot_name_prefix: "(Bot) ", // This is prefixed before the bot's randomly chosen name.
-    use_advanced_bot_ai: true, // Use the advanced bot AI system  
+    use_advanced_bot_ai: true, // Use the advanced bot AI system, very expensive!
     bot_personality_weights: { // Probability of each personality  
-        AGGRESSIVE: 1,  
-        DEFENSIVE: 1,  
-        BALANCED: 2,  
-        CHAOTIC: 0.5,  
-        SNIPER: 1,  
     },
 
     // The class that players and bots spawn as.
