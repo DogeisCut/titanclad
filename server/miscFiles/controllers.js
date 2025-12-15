@@ -1306,7 +1306,8 @@ class PathfindingGrid {
 
                 if (dist <= halfSize) {
                     const t = 1 - dist / halfSize
-                    const penalty = Math.min(255, (t * t * t *t) * 300 | 0)
+                    const basePenalty = 15
+                    const penalty = Math.min(255, basePenalty + Math.pow(t, 4) * 400 | 0)
                     const index = y * this.width + x
                     if (penalty > this.grid[index]) {
                         this.grid[index] = penalty
@@ -1819,14 +1820,6 @@ class io_advancedBotAI extends IO {
     } 
 
     /* HELPER FUNCTIONS: intended to be used within or after states */
-    //obsolete due to new pathfinding code!
-    /*avoidRammingIntoStuffLikeShapesWhileMovingAsToNotBeADumbass() {
-        // Bots will move a slightly different direction until their movement path doesnt intersect with something damaging... like shapes...
-    }
-    compressMovementLikeWASD() {
-        // Unfortunetly not as simple as just snapping movements to angles of 45 degrees, as they will alternate keys and it will end up looking the same.
-        // For best results it may be worth randomly disabling one of the movement keys when the bot is moving diagonally. and how this is done and chosen is based on personality
-    }*/
     //from nearestDifferentMaster (Modified for Advanced Bots)
     static validate(e, m, sqrRange, filterTeam=true) {
         const xRange = sqrRange;  
@@ -1853,9 +1846,7 @@ class io_advancedBotAI extends IO {
 
     think() {
         this.stateMachine.loop()
-        //this.avoidRammingIntoStuffLikeShapesWhileMovingAsToNotBeADumbass()
-        //this.compressMovementLikeWASD()
-        this.body.name = this.stateMachine.currentState
+        //this.body.name = this.stateMachine.currentState
         return this.io
     }
 
