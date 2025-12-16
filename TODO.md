@@ -43,6 +43,7 @@
             - Aura traps
         - [ ] Some sort of smasher with guns
         - [ ] Some auto turret tanks.
+        - [ ] a tank that has strong fire power at the cost of self damage
 
     - [ ] Misc
         - [ ] Remove Arena Closer
