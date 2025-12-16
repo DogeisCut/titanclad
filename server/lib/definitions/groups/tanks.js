@@ -82,7 +82,7 @@ tier1: {
         LABEL: "Clonk",
         DANGER: 4,
         GUNS: [
-            ...weaponArray(gunGenerators.trapLauncher({ length: 18, width: 8}), 2, 0.5)
+            ...weaponArray(gunGenerators.trapLauncher(), 2, 0.5)
         ],
     }
 
@@ -92,6 +92,35 @@ tier1: {
         DANGER: 4,
         GUNS: [
             ...gunGenerators.bulletCannon({width: 12.25}, [g.heavy])
+        ],
+    }
+
+    Class.zerg = {
+        PARENT: "genericTier1Tank",
+        LABEL: "Zerg",
+        DANGER: 4,
+        GUNS: [
+            ...gunGenerators.trapLauncher(),
+            ...gunGenerators.droneSpawner({ angle: 180 })
+        ],
+    }
+
+    Class.warden = {
+        PARENT: "genericTier1Tank",
+        LABEL: "Warden",
+        DANGER: 6,
+        GUNS: [
+            ...gunGenerators.trapLauncher({width: 12.25}, [g.heavy])
+        ],
+    }
+
+    Class.pinion = {
+        PARENT: "genericTank",
+        LABEL: "Pinion",
+        DANGER: 4,
+        GUNS: [
+            ...gunGenerators.bulletCannon({length: 22, width: 8}),
+            ...gunGenerators.trapLauncher(),
         ],
     }
 }
@@ -154,6 +183,26 @@ tier2: {
             ...gunGenerators.bulletCannon({width: 15.5}, [g.heavy, g.heavy])
         ],
     }
+    
+    Class.zalg = {
+        PARENT: "genericTier2Tank",
+        LABEL: "Zalg",
+        DANGER: 4,
+        GUNS: [
+            ...gunGenerators.trapLauncher(),
+            ...weaponMirror(gunGenerators.droneSpawner({ angle: 90 + 45 }), 0.5)
+        ],
+    }
+
+    Class.triple = {
+        PARENT: "genericTier2Tank",
+        LABEL: "Triple",
+        DANGER: 4,
+        GUNS: [
+            ...weaponMirror(gunGenerators.bulletCannon({ length: 16, width: 8, y: -5, delay: 0.5, angle: -8 }), 0),
+            ...gunGenerators.bulletCannon({ length: 18, width: 8}),
+        ],
+    }
 }
 
 tier3: {
@@ -214,6 +263,26 @@ tier3: {
         DANGER: 4,
         GUNS: [
             ...gunGenerators.bulletCannon({width: 18}, [g.heavy, g.heavy, g.heavy])
+        ],
+    }
+
+    Class.zilthrone = {
+        PARENT: "genericTier3Tank",
+        LABEL: "Zilthrone",
+        DANGER: 4,
+        GUNS: [
+            ...gunGenerators.trapLauncher(),
+            ...weaponMirror(gunGenerators.droneSpawner({ angle: 90 + 30 }), 0.5),
+            ...gunGenerators.droneSpawner({ angle: 180 })
+        ],
+    }
+    Class.zilch = {
+        PARENT: "genericTier3Tank",
+        LABEL: "Zilch",
+        DANGER: 4,
+        GUNS: [
+            ...weaponMirror(gunGenerators.trapLauncher({ length: 18, width: 8, y: -5}), 0.5),
+            ...weaponMirror(gunGenerators.droneSpawner({ angle: 90 + 45 }), 0.5),
         ],
     }
 }
@@ -305,8 +374,8 @@ tier4: {
 }
 
 Class.tank.UPGRADES_TIER_0 = ["shooter", "commander", "blocker"]
-    Class.shooter.UPGRADES_TIER_1 = ["double", "sniper", "crusher"]
-        Class.double.UPGRADES_TIER_2 = ["stack", "dam"]
+    Class.shooter.UPGRADES_TIER_1 = ["double", "sniper", "crusher", "pinion"]
+        Class.double.UPGRADES_TIER_2 = ["triple", "stack", "dam"]
             Class.stack.UPGRADES_TIER_3 = ["stream", "barricade"]
                 Class.stream.UPGRADES_TIER_4 = ["river", "slip", "clogger"]
         Class.sniper.UPGRADES_TIER_2 = ["bullseye"]
@@ -315,11 +384,13 @@ Class.tank.UPGRADES_TIER_0 = ["shooter", "commander", "blocker"]
         Class.crusher.UPGRADES_TIER_2 = ["pounder"]
             Class.pounder.UPGRADES_TIER_3 = ["mauler"]
                 Class.mauler.UPGRADES_TIER_4 = ["pulverizer"]
-    Class.commander.UPGRADES_TIER_1 = ["captain"]
-        Class.captain.UPGRADES_TIER_2 = ["major"]
-            Class.major.UPGRADES_TIER_3 = ["colonel"]
+    Class.commander.UPGRADES_TIER_1 = ["captain", "zerg"]
+        Class.captain.UPGRADES_TIER_2 = ["major", "zalg"]
+            Class.major.UPGRADES_TIER_3 = ["colonel", "zilthrone"]
                 Class.colonel.UPGRADES_TIER_4 = ["general"]
-    Class.blocker.UPGRADES_TIER_1 = ["clonk"]
+    Class.blocker.UPGRADES_TIER_1 = ["clonk", "zerg", "warden", "pinion"]
         Class.clonk.UPGRADES_TIER_2 = ["dam"]
-            Class.dam.UPGRADES_TIER_3 = ["barricade"]
+            Class.dam.UPGRADES_TIER_3 = ["barricade", "zilch"]
                 Class.barricade.UPGRADES_TIER_4 = ["clogger"]
+        Class.zerg.UPGRADES_TIER_2 = ["zalg"]
+            Class.zalg.UPGRADES_TIER_3 = ["zilthrone", "zilch"]
